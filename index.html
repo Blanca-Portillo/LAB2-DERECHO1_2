@@ -1325,7 +1325,7 @@
           <div class="qb-group-btns">
             <button type="button" class="qbtn qbtn-primary" onclick="loadCase(7)">⭐ Caso Libro UGB ($600 · 6a 9m)</button>
             <button type="button" class="qbtn qbtn-highlight" onclick="loadCase(8)">🏖️ Vacaciones Adeudadas + San Miguel + Aguinaldo 1-Oct</button>
-            <button type="button" class="qbtn" onclick="loadCase(5)">📄 Roberto Aguilar (PDF Modelo $4,000)</button>
+            <button type="button" class="qbtn" onclick="loadCase(5)">📄 Blanca Argueta (PDF Modelo $4,000)</button>
             <button type="button" class="qbtn" onclick="loadCase(6)">📸 Caso Captura ($700 · 2a 6m 15d)</button>
           </div>
         </div>
@@ -1363,17 +1363,17 @@
             <div class="form-grid">
               <div class="fg span2">
                 <label for="nombreTrabajador">Nombre completo de la persona trabajadora</label>
-                <input id="nombreTrabajador" type="text" placeholder="Ej. Ana Cecilia Martínez"
-                  value="Ana Cecilia Martínez">
+                <input id="nombreTrabajador" type="text" placeholder="Ej. Blanca Leticia Argueta"
+                  value="Ana Cecilia Martínez" oninput="calculate()">
               </div>
               <div class="fg">
                 <label for="patrono">Patrono / Empresa o Razón Social</label>
-                <input id="patrono" type="text" placeholder="Ej. Corporación ABC S.A. de C.V."
-                  value="Corporación ABC S.A. de C.V.">
+                <input id="patrono" type="text" placeholder="SECURE CODE S.A.S de C.V."
+                  value="SECURE CODE S.A.S de C.V.">
               </div>
               <div class="fg">
                 <label for="cargo">Cargo o puesto desempeñado</label>
-                <input id="cargo" type="text" placeholder="Ej. Analista Contable" value="Analista Contable">
+                <input id="cargo" type="text" placeholder="Analista de Seguridad Informática" value="Analista de Seguridad Informática">
               </div>
               <div class="fg">
                 <label for="fechaIngreso">Fecha de ingreso a laborar</label>
@@ -1382,7 +1382,10 @@
               </div>
               <div class="fg">
                 <label for="fechaTermino">Fecha de terminación o despido</label>
-                <input id="fechaTermino" type="date" value="2026-09-28" onchange="onFechaTerminoChange()">
+                <div style="display:flex; gap:8px; align-items:center;">
+                  <input id="fechaTermino" type="date" value="" onchange="onFechaTerminoChange()" style="flex:1;">
+                  <button type="button" class="qbtn" onclick="setFechaTerminoHoy()" title="Usar la fecha actual">Hoy</button>
+                </div>
                 <span class="hint">Cierre de la relación laboral (≥ Fecha ingreso)</span>
               </div>
 
@@ -1390,7 +1393,7 @@
               <div class="span2" style="grid-column: 1 / -1; margin-top: 10px;">
                 <div class="section-subbar">
                   <span>1. Datos Temporales y Salariales</span>
-                  <span class="badge-lock">🔒 Sincronizado e Inamovible (Art. 58 CT)</span>
+                  <span class="badge-lock">Antigüedad editable o calculada por fechas</span>
                 </div>
                 <div class="form-grid-4">
                   <div class="fg">
@@ -1399,24 +1402,24 @@
                     <span class="hint" id="salarioHint">SBD: $23.33/día · Mínimo: $365.00</span>
                   </div>
                   <div class="fg">
-                    <label for="anios">Años Laborados: <span class="badge-lock" style="font-size:0.62rem;padding:1px 5px;">🔒 Inamovible</span></label>
-                    <input id="anios" type="number" class="input-locked" readonly tabindex="-1" value="7" oninput="calculate()">
+                    <label for="anios">Años Laborados:</label>
+                    <input id="anios" type="number" class="input-locked" readonly tabindex="-1" min="0" value="7" oninput="calculate()">
                     <span class="hint" id="aniosHint">Años completos</span>
                   </div>
                   <div class="fg">
-                    <label for="meses">Meses Fraccionados (0-11): <span class="badge-lock" style="font-size:0.62rem;padding:1px 5px;">🔒 Inamovible</span></label>
-                    <input id="meses" type="number" class="input-locked" readonly tabindex="-1" value="5" oninput="calculate()">
+                    <label for="meses">Meses Fraccionados (0-11):</label>
+                    <input id="meses" type="number" class="input-locked" readonly tabindex="-1" min="0" max="11" value="5" oninput="calculate()">
                     <span class="hint" id="mesesHint">Fracción meses</span>
                   </div>
                   <div class="fg">
-                    <label for="dias">Días Fraccionados (0-29): <span class="badge-lock" style="font-size:0.62rem;padding:1px 5px;">🔒 Inamovible</span></label>
-                    <input id="dias" type="number" class="input-locked" readonly tabindex="-1" value="27" oninput="calculate()">
+                    <label for="dias">Días Fraccionados (0-29):</label>
+                    <input id="dias" type="number" class="input-locked" readonly tabindex="-1" min="0" max="29" value="27" oninput="calculate()">
                     <span class="hint" id="diasHint">Fracción días</span>
                   </div>
                 </div>
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; font-size:.73rem; color:var(--text-muted); flex-wrap:wrap; gap:6px;">
                   <span id="antiguedadHint">Antigüedad computada: 7 años, 5 meses, 27 días (Fracción comercial: 177 días)</span>
-                  <button type="button" id="btnToggleManual" style="background:none; border:none; color:var(--blue); cursor:pointer; text-decoration:underline; font-size:.71rem; font-weight:600;" onclick="toggleManualAntiguedad()">⚙️ Ajuste manual excepcional</button>
+                  <button type="button" id="btnToggleManual" style="background:none; border:none; color:var(--blue); cursor:pointer; text-decoration:underline; font-size:.71rem; font-weight:600;" onclick="toggleManualAntiguedad()">✏️ Permitir ingreso manual de antigüedad</button>
                 </div>
               </div>
             </div>
@@ -1979,7 +1982,7 @@
 
           <div class="ledger">
             <div class="ldg-gtitle">Prestaciones proporcionales y adeudadas</div>
-            <div class="ldg-row" id="rowVacCompleta" style="display:none;">
+            <div class="ldg-row" id="rowVacCompleta">
               <div class="ldg-lbl">Vacación completa no pagada<small id="descVacCompleta">15 días + 30% prima (Art. 189 CT)</small></div>
               <div class="ldg-val v-emerald" id="lblVacCompleta">$0.00</div>
             </div>
@@ -2051,11 +2054,11 @@
             <div class="formula-math-display">
               <div class="math-row" style="font-size:0.71rem; padding:6px 10px;">
                 <span class="math-label" style="min-width:105px;">ISSS (3%)</span>
-                <span>Mín(<span class="math-chip sbm">Base Gravada</span>, $1,000) × 0.03</span>
+                <span>Mín(<span class="math-chip sbm">Salario Mensual</span>, $1,000) × 0.03</span>
               </div>
               <div class="math-row" style="font-size:0.71rem; padding:6px 10px;">
                 <span class="math-label" style="min-width:105px;">AFP (7.25%)</span>
-                <span>Mín(<span class="math-chip sbm">Base Gravada</span>, $6,523.20) × 0.0725</span>
+                <span>Mín(<span class="math-chip sbm">Salario Mensual</span>, $6,523.20) × 0.0725</span>
               </div>
               <div class="math-row" style="font-size:0.71rem; padding:6px 10px;">
                 <span class="math-label" style="min-width:105px;">ISR Retención</span>
@@ -2313,8 +2316,8 @@
         aniosInput.classList.remove('input-locked');
         mesesInput.classList.remove('input-locked');
         diasInput.classList.remove('input-locked');
-        btn.textContent = '🔒 Bloquear y volver al cálculo automático por fechas';
-        btn.style.color = '#dc2626';
+        btn.textContent = '📅 Calcular antigüedad automáticamente';
+        btn.style.color = 'var(--blue)';
       } else {
         aniosInput.readOnly = true;
         mesesInput.readOnly = true;
@@ -2325,7 +2328,7 @@
         aniosInput.classList.add('input-locked');
         mesesInput.classList.add('input-locked');
         diasInput.classList.add('input-locked');
-        btn.textContent = '⚙️ Ajuste manual excepcional';
+        btn.textContent = '✏️ Permitir ingreso manual de antigüedad';
         btn.style.color = 'var(--blue)';
         syncFechasAntiguedad();
       }
@@ -2369,7 +2372,32 @@
       calculate();
     }
 
-    function onFechaTerminoChange() {
+    let seguirFechaActual = true;
+    function fechaActualISO() {
+      const ahora = new Date();
+      const anio = ahora.getFullYear();
+      const mes = String(ahora.getMonth() + 1).padStart(2, '0');
+      const dia = String(ahora.getDate()).padStart(2, '0');
+      return `${anio}-${mes}-${dia}`;
+    }
+
+    function setFechaTerminoHoy() {
+      seguirFechaActual = true;
+      g('fechaTermino').value = fechaActualISO();
+      onFechaTerminoChange(true);
+    }
+
+    function programarActualizacionFecha() {
+      const ahora = new Date();
+      const manana = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate() + 1);
+      window.setTimeout(() => {
+        if (seguirFechaActual) setFechaTerminoHoy();
+        programarActualizacionFecha();
+      }, manana - ahora);
+    }
+
+    function onFechaTerminoChange(esActualizacionAutomatica = false) {
+      if (!esActualizacionAutomatica) seguirFechaActual = false;
       syncFechasAntiguedad();
       const modo = g('modoAgui') ? g('modoAgui').value : '';
       if (modo === 'reforma_oct' || modo === 'tradicional_dic') {
@@ -2773,9 +2801,10 @@
       const baseGravada = isBlocked ? 0 : (vacacionTotal + subHD + subHN + subAsue + subDesc);
       const exento = isBlocked ? 0 : (aguinaldo + compensacion);
 
-      const isssBase = Math.min(baseGravada, ISSS_TOPE);
+      const salarioBaseCotizacion = isBlocked ? 0 : salario;
+      const isssBase = Math.min(salarioBaseCotizacion, ISSS_TOPE);
       const isss = Math.round(isssBase * ISSS_RATE * 100) / 100;
-      const afpBase = Math.min(baseGravada, AFP_TOPE);
+      const afpBase = Math.min(salarioBaseCotizacion, AFP_TOPE);
       const afp = Math.round(afpBase * AFP_RATE * 100) / 100;
       const baseISR = Math.max(0, baseGravada - isss - afp);
       const isr = calcISR(baseISR);
@@ -2785,18 +2814,23 @@
       // Memoria de cálculo de deducciones (Cards Dinámicas)
       g('liveFormulaDed').innerHTML = `
         <div class="subst-card">
-          <span class="subst-title">Base Gravada</span>
+          <span class="subst-title">Base Gravada de Liquidación</span>
           <span class="subst-calc">Exento: ${fmt(exento)}</span>
           <span class="subst-res">${fmt(baseGravada)}</span>
         </div>
         <div class="subst-card">
+          <span class="subst-title">Salario Mensual Base de Cotización</span>
+          <span class="subst-calc">Salario mensual reportado</span>
+          <span class="subst-res">${fmt(salarioBaseCotizacion)}</span>
+        </div>
+        <div class="subst-card">
           <span class="subst-title">ISSS (3%)</span>
-          <span class="subst-calc">Mín(${fmt(baseGravada)}, $1,000) × 3%</span>
+          <span class="subst-calc">Mín(${fmt(salarioBaseCotizacion)}, $1,000) × 3%</span>
           <span class="subst-res" style="color:#e11d48;">-${fmt(isss)}</span>
         </div>
         <div class="subst-card">
           <span class="subst-title">AFP (7.25%)</span>
-          <span class="subst-calc">Mín(${fmt(baseGravada)}, $6,523.20) × 7.25%</span>
+          <span class="subst-calc">Mín(${fmt(salarioBaseCotizacion)}, $6,523.20) × 7.25%</span>
           <span class="subst-res" style="color:#e11d48;">-${fmt(afp)}</span>
         </div>
         <div class="subst-card">
@@ -2813,12 +2847,8 @@
       g('lblNombreResult').textContent = g('nombreTrabajador').value || '—';
       g('lblNeto').textContent = fmt(neto);
 
-      if (vacCompletaAdeudada > 0) {
-        g('rowVacCompleta').style.display = 'flex';
-        setRow('lblVacCompleta', 'descVacCompleta', vacCompletaAdeudada, '15 días + 30% prima no pagada (Art. 189 CT)');
-      } else {
-        g('rowVacCompleta').style.display = 'none';
-      }
+      setRow('lblVacCompleta', 'descVacCompleta', vacCompletaAdeudada,
+        vacCompletaAdeudada > 0 ? '15 días + 30% prima no pagada (Art. 189 CT)' : 'No adeudada');
       setRow('lblVacacion', 'descVacacion', vacProporcional,
         diasVacProporcionales > 0 ? `${fmtN(diasVacProporcionales)} días × ${fmt(salDiario)}/d + 30% prima (${diasCorteVac}d comp.)` : 'Sin vacación');
       setRow('lblAguinaldo', 'descAguinaldo', aguinaldo,
@@ -2829,8 +2859,8 @@
       setRow('lblHN', 'descHN', subHN, sinHExt ? 'No aplica' : `${hExtN}h × ${fmt(horaOrdNoct * 2)}/h (No pagadas)`);
       setRow('lblAsue', 'descAsue', subAsue, sinAsueto ? 'No aplica' : `${dAsue} día${dAsue !== 1 ? 's' : ''} × ${fmt(salDiario * 2)}/d`);
       setRow('lblDesc', 'descDesc', subDesc, sinHExt ? 'No aplica' : `${dDesc} días × ${fmt(salDiario * 2)}/d (No pagados)`);
-      setRow('lblIsss', 'descIsss', isss, `Base gravada: ${fmt(isssBase)} × 3% (Regl. ISSS)`, true);
-      setRow('lblAfp', 'descAfp', afp, `Base gravada: ${fmt(afpBase)} × 7.25% (Ley SAP)`, true);
+      setRow('lblIsss', 'descIsss', isss, `Salario mensual: ${fmt(isssBase)} × 3% (Regl. ISSS)`, true);
+      setRow('lblAfp', 'descAfp', afp, `Salario mensual: ${fmt(afpBase)} × 7.25% (Ley SAP)`, true);
       setRow('lblIsr', 'descIsr', isr, `Base gravable: ${fmt(baseISR)} | Exento: ${fmt(exento)}`, true);
 
       // Estado global para exportación en PDF
@@ -2840,7 +2870,8 @@
         anios, mesesRaw, diasRaw, diasFraccTotales, tipo, preaviso, isBlocked,
         estadoVac, vacCompletaAdeudada, vacProporcional, vacacionTotal,
         aguinaldo, diasAguiComputados, descAguiModo, compensacion, labelComp,
-        subHD, subHN, subAsue, subDesc, totalBruto, isss, afp, isr, totalDed, neto, baseGravada, exento
+        subHD, subHN, subAsue, subDesc, totalBruto, isss, afp, isr, totalDed, neto,
+        baseGravada, salarioBaseCotizacion, isssBase, afpBase, exento
       };
     }
 
@@ -2911,7 +2942,7 @@
 
       g('pDesglose').innerHTML = rows.map(r => `<tr><td>${r.c}</td><td>${r.l}</td><td class="right">${fmt(r.v)}</td></tr>`).join('');
       g('pBrutoTotal').textContent = fmt(s.totalBruto);
-      g('pDeduccionesNota').textContent = `Remuneración gravada sujeta a cotización: ${fmt(s.baseGravada)}. Ingresos exentos de ley: ${fmt(s.exento)} (Indemnización y Aguinaldo).`;
+      g('pDeduccionesNota').textContent = `Salario mensual base para ISSS y AFP: ${fmt(s.salarioBaseCotizacion)}. Base gravada de liquidación para ISR: ${fmt(s.baseGravada)}. Ingresos exentos: ${fmt(s.exento)} (Indemnización y Aguinaldo).`;
 
       const deds = [
         { c: 'Cotización ISSS régimen salud (trabajador 3%)', l: 'Regl. ISSS, Art. 29', v: s.isss },
@@ -2936,14 +2967,14 @@
       document.querySelectorAll('input[name="asueto"]').forEach(c => c.checked = false);
 
       const c = {
-        1: { nom: 'Carlos Alberto Cruz', pat: 'Retail SV S.A. de C.V.', car: 'Auxiliar de Tienda', sal: 600, ing: '2019-04-01', ter: '2026-09-28', uvac: '2025-04-01', tipo: 'despido_injusto', pre: 'si', hd: 10, hn: 5, dd: 1, asue: ['asv11', 'asv14', 'asv15'], modoAgui: 'reforma_oct', fAgui: '2025-10-01', vacPendiente: 'gozada' },
-        2: { nom: 'Marta Elena Rivas', pat: 'Servicios Logísticos SV S.A.', car: 'Cajera', sal: 500, ing: '2022-01-10', ter: '2026-09-28', uvac: '2025-01-10', tipo: 'despido_justo', pre: 'si', hd: 0, hn: 0, dd: 0, asue: [], modoAgui: 'reforma_oct', fAgui: '2025-10-01', vacPendiente: 'gozada' },
-        3: { nom: 'José Roberto Ventura', pat: 'Industrias Norte S.A.', car: 'Operario de Planta', sal: 800, ing: '2024-01-15', ter: '2026-09-28', uvac: '2024-01-15', tipo: 'renuncia', pre: 'si', hd: 0, hn: 0, dd: 0, asue: [], modoAgui: 'reforma_oct', fAgui: '2025-10-01', vacPendiente: 'gozada' },
-        4: { nom: 'Ana Cecilia Vásquez', pat: 'Corporación Comercial ABC S.A.', car: 'Coordinadora de Operaciones', sal: 950, ing: '2021-06-01', ter: '2026-09-28', uvac: '2025-06-01', tipo: 'renuncia', pre: 'si', hd: 0, hn: 0, dd: 0, asue: [], modoAgui: 'reforma_oct', fAgui: '2025-10-01', vacPendiente: 'gozada' },
-        5: { nom: 'Roberto Alfredo Aguilar Bonilla', pat: 'Orion Software S.A. de C.V.', car: 'Ingeniero de Software Senior', sal: 4000, ing: '2006-01-01', ter: '2026-08-12', uvac: '2025-08-12', tipo: 'despido_injusto', pre: 'si', hd: 6, hn: 3, dd: 1.5, asue: ['asv10'], modoAgui: 'reforma_oct', fAgui: '2025-10-01', vacPendiente: 'gozada' },
-        6: { nom: 'Trabajador Caso Captura', pat: 'Distribuidora Central S.A.', car: 'Ejecutivo de Ventas', sal: 700, ing: '2024-03-13', ter: '2026-09-28', uvac: '2025-09-28', tipo: 'despido_injusto', pre: 'si', hd: 0, hn: 0, dd: 0, asue: ['asv14'], modoAgui: 'reforma_oct', fAgui: '2025-10-01', vacPendiente: 'gozada' },
-        7: { nom: 'Roberto Herrera (Libro UGB Bloque 3)', pat: 'Empresa Modelo UGB S.A.', car: 'Auxiliar Contable', sal: 600, ing: '2015-01-01', ter: '2021-09-30', uvac: '2021-04-15', tipo: 'despido_injusto', pre: 'si', hd: 0, hn: 0, dd: 0, asue: [], modoAgui: 'tradicional_dic', fAgui: '2020-12-12', vacPendiente: 'gozada' },
-        8: { nom: 'Guillermo Antonio Peña', pat: 'Comercial del Oriente S.A. de C.V.', car: 'Supervisor de Operaciones', sal: 650, ing: '2020-02-01', ter: '2026-09-28', uvac: '2025-02-01', tipo: 'despido_injusto', pre: 'si', hd: 8, hn: 4, dd: 1, asue: ['asv14'], modoAgui: 'reforma_oct', fAgui: '2025-10-01', vacPendiente: 'pendiente' }
+        1: { nom: 'Blanca Leticia Argueta', pat: 'SECURE CODE S.A.S de C.V.', car: 'Analista de Seguridad Informática', sal: 600, ing: '2019-04-01', ter: '2026-09-28', uvac: '2025-04-01', tipo: 'despido_injusto', pre: 'si', hd: 10, hn: 5, dd: 1, asue: ['asv11', 'asv14', 'asv15'], modoAgui: 'reforma_oct', fAgui: '2025-10-01', vacPendiente: 'gozada' },
+        2: { nom: 'Blanca Leticia Argueta', pat: 'SECURE CODE S.A.S de C.V.', car: 'Analista de Seguridad Informática', sal: 500, ing: '2022-01-10', ter: '2026-09-28', uvac: '2025-01-10', tipo: 'despido_justo', pre: 'si', hd: 0, hn: 0, dd: 0, asue: [], modoAgui: 'reforma_oct', fAgui: '2025-10-01', vacPendiente: 'gozada' },
+        3: { nom: 'Blanca Leticia Argueta', pat: 'SECURE CODE S.A.S de C.V.', car: 'Analista de Seguridad Informática', sal: 800, ing: '2024-01-15', ter: '2026-09-28', uvac: '2024-01-15', tipo: 'renuncia', pre: 'si', hd: 0, hn: 0, dd: 0, asue: [], modoAgui: 'reforma_oct', fAgui: '2025-10-01', vacPendiente: 'gozada' },
+        4: { nom: 'Blanca Leticia Argueta', pat: 'SECURE CODE S.A.S de C.V.', car: 'Analista de Seguridad Informática', sal: 950, ing: '2021-06-01', ter: '2026-09-28', uvac: '2025-06-01', tipo: 'renuncia', pre: 'si', hd: 0, hn: 0, dd: 0, asue: [], modoAgui: 'reforma_oct', fAgui: '2025-10-01', vacPendiente: 'gozada' },
+        5: { nom: 'Blanca Leticia Argueta', pat: 'SECURE CODE S.A.S de C.V.', car: 'Analista de Seguridad Informática', sal: 4000, ing: '2006-01-01', ter: '2026-08-12', uvac: '2025-08-12', tipo: 'despido_injusto', pre: 'si', hd: 6, hn: 3, dd: 1.5, asue: ['asv10'], modoAgui: 'reforma_oct', fAgui: '2025-10-01', vacPendiente: 'gozada' },
+        6: { nom: 'Blanca Leticia Argueta', pat: 'SECURE CODE S.A.S de C.V.', car: 'Analista de Seguridad Informática', sal: 700, ing: '2024-03-13', ter: '2026-09-28', uvac: '2025-09-28', tipo: 'despido_injusto', pre: 'si', hd: 0, hn: 0, dd: 0, asue: ['asv14'], modoAgui: 'reforma_oct', fAgui: '2025-10-01', vacPendiente: 'gozada' },
+        7: { nom: 'Blanca Leticia Argueta (Libro UGB Bloque 3)', pat: 'SECURE CODE S.A.S de C.V.', car: 'Analista de Seguridad Informática', sal: 700, ing: '2015-01-01', ter: '2021-09-30', uvac: '2021-04-15', tipo: 'despido_injusto', pre: 'si', hd: 0, hn: 0, dd: 0, asue: [], modoAgui: 'tradicional_dic', fAgui: '2020-12-12', vacPendiente: 'gozada' },
+        8: { nom: 'Blanca Leticia Argueta', pat: 'SECURE CODE S.A.S de C.V.', car: 'Analista de Seguridad Informática', sal: 650, ing: '2020-02-01', ter: '2026-09-28', uvac: '2025-02-01', tipo: 'despido_injusto', pre: 'si', hd: 8, hn: 4, dd: 1, asue: ['asv14'], modoAgui: 'reforma_oct', fAgui: '2025-10-01', vacPendiente: 'pendiente' }
       }[n];
       if (!c) return;
 
@@ -2952,6 +2983,7 @@
       g('cargo').value = c.car;
       g('salario').value = c.sal;
       g('fechaIngreso').value = c.ing;
+      seguirFechaActual = false;
       g('fechaTermino').value = c.ter;
       g('ultimaVacacion').value = c.uvac;
 
@@ -2984,7 +3016,15 @@
     }
 
     function resetAll() {
-      g('calcForm').reset();
+      g('calcForm').querySelectorAll('input[type="text"], input[type="number"], input[type="date"]')
+        .forEach(input => {
+          if (input.id !== 'fechaTermino') input.value = '';
+        });
+      seguirFechaActual = true;
+      g('fechaTermino').value = fechaActualISO();
+      document.querySelectorAll('#calcForm input[type="radio"]').forEach(input => {
+        input.checked = input.defaultChecked;
+      });
       g('toggleSinAsueto').classList.remove('on');
       g('asuetosSection').style.display = 'block';
       g('toggleNoAplica').classList.remove('on');
@@ -3015,9 +3055,11 @@
 
     /* Inicialización de página */
     document.addEventListener('DOMContentLoaded', () => {
+      g('fechaTermino').value = fechaActualISO();
       syncFechasAntiguedad();
       onModoAguiChange(true);
       updateCierreUI();
+      programarActualizacionFecha();
     });
   </script>
 </body>
