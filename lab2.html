@@ -1,0 +1,3029 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calculadora de Prestaciones Laborales | El Salvador</title>
+  <meta name="description"
+    content="Herramienta digital para calcular las prestaciones económicas de fin de contrato y recargos por jornadas especiales en El Salvador, conforme al Código de Trabajo.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@500;700&display=swap"
+    rel="stylesheet">
+  <style>
+    /* ============================================================
+       DESIGN SYSTEM
+       ============================================================ */
+    :root {
+      --blue: #1d4ed8;
+      --blue-hover: #1e40af;
+      --blue-light: #eff6ff;
+      --blue-border: #bfdbfe;
+      --emerald: #059669;
+      --rose: #e11d48;
+      --amber: #d97706;
+
+      --bg-body: #eef2f7;
+      --bg-card: #ffffff;
+      --bg-subtle: #f8fafc;
+      --bg-input: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / .07);
+      --shadow-md: 0 4px 12px -2px rgb(0 0 0 / .10);
+      --shadow-lg: 0 14px 30px -4px rgb(0 0 0 / .13);
+      --radius: 12px;
+      --font: 'Plus Jakarta Sans', system-ui, sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+    }
+
+    [data-theme="dark"] {
+      --bg-body: #07101f;
+      --bg-card: #101d33;
+      --bg-subtle: #172030;
+      --bg-input: #0e1a2e;
+      --text-main: #e2e8f0;
+      --text-muted: #94a3b8;
+      --border: #1e3050;
+      --blue-light: rgba(29, 78, 216, .18);
+      --blue-border: #1e40af;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg-body);
+      color: var(--text-main);
+      line-height: 1.55;
+      transition: background .25s, color .25s;
+      padding-bottom: 60px;
+    }
+
+    /* ── HERO ───────────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(135deg, #0f172a 0%, #1a3461 55%, #1d4ed8 100%);
+      padding: 36px 24px 30px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, .12);
+      border: 1px solid rgba(255, 255, 255, .22);
+      padding: 3px 12px;
+      border-radius: 9999px;
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: #bfdbfe;
+      margin-bottom: 10px;
+    }
+
+    .hero-title {
+      font-size: clamp(1.55rem, 4vw, 2.2rem);
+      font-weight: 800;
+      letter-spacing: -.03em;
+      line-height: 1.15;
+    }
+
+    .hero-title span {
+      color: #60a5fa;
+    }
+
+    .hero-sub {
+      margin-top: 8px;
+      color: #94a3b8;
+      font-size: .87rem;
+      max-width: 520px;
+    }
+
+    .theme-btn {
+      background: rgba(255, 255, 255, .1);
+      border: 1px solid rgba(255, 255, 255, .22);
+      color: #e2e8f0;
+      padding: 9px 18px;
+      border-radius: 8px;
+      font-size: .82rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background .15s;
+      align-self: center;
+    }
+
+    .theme-btn:hover {
+      background: rgba(255, 255, 255, .18);
+    }
+
+    /* ── LAYOUT ─────────────────────────────────────────── */
+    .container {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 26px 20px 0;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(300px, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media(max-width:820px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr !important;
+      }
+    }
+
+    /* ── QUICK BAR HIERARCHY ────────────────────────────── */
+    .quick-bar-wrapper {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .quick-bar-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .qb-title {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .qb-title span:first-child {
+      font-size: .84rem;
+      font-weight: 800;
+      color: var(--blue);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .qb-title .qb-sub {
+      font-size: .71rem;
+      color: var(--text-muted);
+    }
+    .quick-bar-groups {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .qb-group {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .qb-group-lbl {
+      font-size: .69rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--text-muted);
+      min-width: 190px;
+    }
+    .qb-group-btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      flex: 1;
+    }
+    .qbtn {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: .73rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all .16s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .qbtn:hover {
+      background: var(--blue-light);
+      color: var(--blue);
+      border-color: var(--blue-border);
+      transform: translateY(-1px);
+    }
+    .qbtn-primary {
+      background: rgba(29, 78, 216, .08);
+      border-color: var(--blue-border);
+      color: var(--blue);
+      font-weight: 700;
+    }
+    .qbtn-primary:hover {
+      background: var(--blue);
+      color: #fff;
+    }
+    .qbtn-highlight {
+      background: rgba(217, 119, 6, .1);
+      border-color: rgba(217, 119, 6, .35);
+      color: #b45309;
+      font-weight: 700;
+    }
+    [data-theme="dark"] .qbtn-highlight {
+      background: rgba(217, 119, 6, .2);
+      color: #fcd34d;
+      border-color: #d97706;
+    }
+    .qbtn-highlight:hover {
+      background: #d97706;
+      color: #fff;
+      border-color: #d97706;
+    }
+    .qbtn-reset {
+      background: transparent;
+      border-color: var(--border);
+      color: var(--text-muted);
+    }
+    .qbtn-reset:hover {
+      background: rgba(225, 29, 72, .1);
+      color: #e11d48;
+      border-color: rgba(225, 29, 72, .3);
+    }
+
+    /* ── CARDS ──────────────────────────────────────────── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 20px;
+    }
+
+    .card-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .c-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .ci-blue {
+      background: var(--blue-light);
+    }
+
+    .ci-indigo {
+      background: rgba(79, 70, 229, .1);
+    }
+
+    .ci-green {
+      background: rgba(5, 150, 105, .1);
+    }
+
+    .card-head h2 {
+      font-size: .96rem;
+      font-weight: 700;
+      letter-spacing: -.01em;
+    }
+
+    .card-head p {
+      font-size: .74rem;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    /* ── FORMS ──────────────────────────────────────────── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .span2 {
+      grid-column: 1 / -1;
+    }
+
+    .fg {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    label {
+      font-size: .77rem;
+      font-weight: 600;
+    }
+
+    input[type="number"],
+    input[type="text"],
+    input[type="date"],
+    select {
+      font-family: inherit;
+      font-size: .87rem;
+      padding: 9px 12px;
+      border-radius: 7px;
+      border: 1.5px solid var(--border);
+      background: var(--bg-input);
+      color: var(--text-main);
+      outline: none;
+      width: 100%;
+      transition: border-color .15s, box-shadow .15s;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(29, 78, 216, .13);
+    }
+
+    .hint {
+      font-size: .71rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* ── RADIO PILLS ────────────────────────────────────── */
+    .radio-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .radio-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: .83rem;
+      font-weight: 600;
+      background: var(--bg-subtle);
+      user-select: none;
+      transition: all .15s;
+    }
+
+    .radio-pill input[type="radio"] {
+      display: none;
+    }
+
+    .radio-pill:has(input:checked) {
+      border-color: var(--blue);
+      background: var(--blue-light);
+      color: var(--blue);
+    }
+
+    .rdot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all .15s;
+    }
+
+    .radio-pill:has(input:checked) .rdot {
+      border-color: var(--blue);
+      background: var(--blue);
+    }
+
+    .radio-pill:has(input:checked) .rdot::after {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #fff;
+      display: block;
+    }
+
+    /* ── TOGGLE ─────────────────────────────────────────── */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 14px;
+      border-radius: 8px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      margin-top: 10px;
+      cursor: pointer;
+      transition: border-color .15s;
+    }
+
+    .toggle-row:hover {
+      border-color: var(--blue);
+    }
+
+    .toggle-info {
+      font-size: .82rem;
+      font-weight: 600;
+    }
+
+    .toggle-info small {
+      display: block;
+      font-size: .71rem;
+      color: var(--text-muted);
+      font-weight: 400;
+      margin-top: 1px;
+    }
+
+    .tsw {
+      width: 38px;
+      height: 21px;
+      background: var(--border);
+      border-radius: 9999px;
+      position: relative;
+      transition: background .2s;
+      flex-shrink: 0;
+    }
+
+    .tsw::after {
+      content: '';
+      position: absolute;
+      left: 3px;
+      top: 3px;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 1px 3px rgb(0 0 0/.3);
+      transition: transform .2s;
+    }
+
+    .toggle-row.on .tsw {
+      background: var(--blue);
+    }
+
+    .toggle-row.on .tsw::after {
+      transform: translateX(17px);
+    }
+
+    /* ── EXTRA SECTION ──────────────────────────────────── */
+    .xs {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .xs-title {
+      font-size: .72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    /* ── FORMULA BOX ────────────────────────────────────── */
+    .fbox {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--blue);
+      border-radius: 8px;
+      padding: 11px 13px;
+      margin-top: 14px;
+    }
+
+    .fbox h4 {
+      font-size: .71rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--blue);
+      margin-bottom: 6px;
+    }
+
+    .fbox ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .fbox li {
+      font-size: .73rem;
+      color: var(--text-muted);
+      display: flex;
+      gap: 6px;
+    }
+
+    .fbox li::before {
+      content: '→';
+      color: var(--blue);
+      flex-shrink: 0;
+    }
+
+    .fbox code {
+      font-family: var(--mono);
+      background: var(--bg-card);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: .71rem;
+    }
+
+    /* ── SIDEBAR ────────────────────────────────────────── */
+    .sidebar {
+      position: sticky;
+      top: 20px;
+    }
+
+    /* Total hero */
+    .liq-card {
+      background: linear-gradient(135deg, #0f172a 0%, #1a3461 60%, #1d4ed8 100%);
+      border-radius: var(--radius);
+      padding: 22px;
+      color: #fff;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .liq-card::after {
+      content: '$';
+      position: absolute;
+      right: 16px;
+      bottom: -12px;
+      font-size: 5rem;
+      font-weight: 800;
+      color: rgba(255, 255, 255, .05);
+      line-height: 1;
+    }
+
+    .liq-lbl {
+      font-size: .71rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: #94a3b8;
+      font-weight: 700;
+    }
+
+    .liq-bruto {
+      font-size: 2.2rem;
+      font-weight: 800;
+      font-family: var(--mono);
+      color: #60a5fa;
+      margin-top: 4px;
+      letter-spacing: -.02em;
+    }
+
+    .liq-neto-row {
+      display: flex;
+      gap: 24px;
+      margin-top: 10px;
+    }
+
+    .liq-neto-item span {
+      font-size: .68rem;
+      color: #94a3b8;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      display: block;
+    }
+
+    .liq-neto-val {
+      font-family: var(--mono);
+      font-weight: 700;
+      font-size: .95rem;
+    }
+
+    .liq-neto-val.green {
+      color: #34d399;
+    }
+
+    .liq-neto-val.red {
+      color: #f87171;
+    }
+
+    /* Ledger */
+    .ledger {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ldg-gtitle {
+      font-size: .68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--text-muted);
+      margin: 12px 0 5px;
+      padding-left: 2px;
+    }
+
+    .ldg-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 7px 4px;
+      border-bottom: 1px solid var(--border);
+      font-size: .82rem;
+    }
+
+    .ldg-row:last-child {
+      border-bottom: none;
+    }
+
+    .ldg-lbl small {
+      display: block;
+      font-size: .67rem;
+      color: var(--text-muted);
+    }
+
+    .ldg-val {
+      font-family: var(--mono);
+      font-size: .81rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .v-emerald {
+      color: var(--emerald);
+    }
+
+    .v-rose {
+      color: var(--rose);
+    }
+
+    .v-zero {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .ldg-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 4px 4px;
+      border-top: 2px solid var(--text-main);
+      margin-top: 8px;
+      font-weight: 800;
+      font-size: .96rem;
+    }
+
+    .ldg-total .ldg-val {
+      color: var(--blue);
+      font-size: 1rem;
+    }
+
+    /* Base legal */
+    .base-legal {
+      margin-top: 14px;
+      padding: 11px 13px;
+      border-radius: 8px;
+      background: var(--blue-light);
+      border: 1px solid var(--blue-border);
+      font-size: .71rem;
+      color: var(--blue);
+      line-height: 1.6;
+    }
+
+    .base-legal strong {
+      display: block;
+      margin-bottom: 3px;
+      font-size: .73rem;
+    }
+
+    /* Export btn */
+    .export-btn {
+      width: 100%;
+      padding: 11px;
+      border-radius: 8px;
+      border: none;
+      background: var(--blue);
+      color: #fff;
+      font-family: inherit;
+      font-size: .84rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 14px;
+      transition: all .15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+
+    .export-btn:hover {
+      background: var(--blue-hover);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+    .export-btn:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+      filter: grayscale(0.5);
+    }
+
+    /* ── SUB-BAR: DATOS TEMPORALES Y SALARIALES ───────── */
+    .section-subbar {
+      background: #003366;
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: .86rem;
+      margin: 16px 0 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    [data-theme="dark"] .section-subbar {
+      background: #1e3a8a;
+      border: 1px solid #3b82f6;
+    }
+
+    .form-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    @media(max-width: 860px) {
+      .form-grid-4 {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    @media(max-width: 480px) {
+      .form-grid-4 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .input-locked {
+      background: var(--bg-subtle) !important;
+      cursor: not-allowed;
+      font-weight: 700;
+      color: var(--blue);
+      border-color: var(--border);
+    }
+
+    .badge-lock {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: .68rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+    }
+    [data-theme="dark"] .badge-lock {
+      background: rgba(14, 165, 233, .2);
+      color: #7dd3fc;
+      border-color: #0284c7;
+    }
+
+    /* ── STEP FORMULA BOXES ────────────────────────────── */
+    /* ── CARD STEP BADGES ──────────────────────────────── */
+    .card-step-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: .64rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: var(--blue-light);
+      color: var(--blue);
+      border: 1px solid var(--blue-border);
+      margin-bottom: 4px;
+    }
+
+    /* ── FORMULA DISPLAY SYSTEM (FDS) ─────────────────── */
+    .step-formula-box {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      margin-top: 18px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+    }
+    .step-formula-box::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 5px;
+      background: linear-gradient(180deg, var(--blue) 0%, #3b82f6 100%);
+      border-top-left-radius: var(--radius);
+      border-bottom-left-radius: var(--radius);
+    }
+    .step-formula-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed var(--border);
+    }
+    .step-pill {
+      background: var(--blue);
+      color: #fff;
+      font-size: 0.64rem;
+      font-weight: 800;
+      letter-spacing: .06em;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .legal-badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--blue);
+      background: var(--blue-light);
+      border: 1px solid var(--blue-border);
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-family: var(--mono);
+    }
+
+    /* Math Equation Display */
+    .formula-math-display {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .math-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px 8px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-family: var(--mono);
+      font-size: 0.77rem;
+    }
+    .math-label {
+      font-family: var(--font);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      min-width: 140px;
+    }
+    .math-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.74rem;
+      border: 1px solid transparent;
+      user-select: none;
+    }
+    .math-chip.sbm {
+      background: #eff6ff;
+      border-color: #bfdbfe;
+      color: #1d4ed8;
+    }
+    .math-chip.sbd {
+      background: #eef2ff;
+      border-color: #c7d2fe;
+      color: #4338ca;
+    }
+    .math-chip.time {
+      background: #fffbeb;
+      border-color: #fde68a;
+      color: #b45309;
+    }
+    .math-chip.res {
+      background: #ecfdf5;
+      border-color: #a7f3d0;
+      color: #047857;
+    }
+    [data-theme="dark"] .math-chip.sbm {
+      background: rgba(29, 78, 216, .2);
+      border-color: #2563eb;
+      color: #93c5fd;
+    }
+    [data-theme="dark"] .math-chip.sbd {
+      background: rgba(79, 70, 229, .2);
+      border-color: #4f46e5;
+      color: #a5b4fc;
+    }
+    [data-theme="dark"] .math-chip.time {
+      background: rgba(217, 119, 6, .2);
+      border-color: #d97706;
+      color: #fcd34d;
+    }
+    [data-theme="dark"] .math-chip.res {
+      background: rgba(5, 150, 105, .2);
+      border-color: #059669;
+      color: #6ee7b7;
+    }
+
+    .math-op {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: var(--text-muted);
+      font-size: 0.74rem;
+      user-select: none;
+    }
+
+    .math-fraction {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      vertical-align: middle;
+      font-size: 0.74rem;
+      margin: 0 2px;
+    }
+    .math-fraction .num {
+      border-bottom: 1.5px solid currentColor;
+      padding: 0 4px 1px;
+      width: 100%;
+      text-align: center;
+      font-weight: 700;
+    }
+    .math-fraction .den {
+      padding: 1px 4px 0;
+      width: 100%;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    /* Live Substitution Grid */
+    .formula-live {
+      background: linear-gradient(135deg, rgba(29, 78, 216, .04) 0%, rgba(59, 130, 246, .07) 100%);
+      border: 1px solid var(--blue-border);
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+    [data-theme="dark"] .formula-live {
+      background: linear-gradient(135deg, rgba(29, 78, 216, .12) 0%, rgba(30, 58, 138, .18) 100%);
+      border-color: #1e40af;
+    }
+    .live-subst-header {
+      font-size: 0.69rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--blue);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .subst-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 8px;
+    }
+    .subst-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 8px 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+    .subst-title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .subst-calc {
+      font-family: var(--mono);
+      font-size: 0.74rem;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+    .subst-res {
+      font-family: var(--mono);
+      font-weight: 800;
+      font-size: 0.85rem;
+      color: var(--blue);
+    }
+    .subst-res.emerald {
+      color: var(--emerald);
+    }
+    .subst-res.amber {
+      color: var(--amber);
+    }
+
+    /* ── BLOQUEO POR FALTA DE PREAVISO ──────────────────── */
+    .card.card-blocked {
+      opacity: 0.42;
+      pointer-events: none;
+      filter: grayscale(0.65);
+      position: relative;
+      cursor: not-allowed;
+      transition: all .25s ease;
+      user-select: none;
+    }
+    .card.card-blocked input,
+    .card.card-blocked select,
+    .card.card-blocked button {
+      pointer-events: none !important;
+    }
+    .blocked-banner {
+      background: #fef2f2;
+      border: 1.5px solid #f87171;
+      border-left: 5px solid #dc2626;
+      border-radius: 9px;
+      padding: 13px 15px;
+      color: #991b1b;
+      font-size: .8rem;
+      line-height: 1.5;
+    }
+    [data-theme="dark"] .blocked-banner {
+      background: rgba(225, 29, 72, .18);
+      border-color: #e11d48;
+      border-left-color: #f43f5e;
+      color: #fecdd3;
+    }
+    .blocked-banner strong {
+      color: #b91c1c;
+    }
+    [data-theme="dark"] .blocked-banner strong {
+      color: #fda4af;
+    }
+    .tag-no-pagado {
+      background: rgba(225, 29, 72, .1);
+      color: #e11d48;
+      border: 1px solid rgba(225, 29, 72, .25);
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: .67rem;
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+    [data-theme="dark"] .tag-no-pagado {
+      background: rgba(225, 29, 72, .25);
+      color: #fda4af;
+      border-color: rgba(225, 29, 72, .4);
+    }
+
+    footer {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: .72rem;
+      margin-top: 36px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── PRINT COMPROBANTE ──────────────────────────────── */
+    @media print {
+      body {
+        background: #fff !important;
+        color: #000 !important;
+        padding: 0;
+        font-family: 'Times New Roman', serif;
+      }
+
+      .hero,
+      .quick-bar,
+      .card:not(#printCard),
+      .layout>main,
+      .sidebar>.liq-card,
+      .sidebar>.card:not(#printCard),
+      .export-btn,
+      footer {
+        display: none !important;
+      }
+
+      #printCard {
+        display: block !important;
+        box-shadow: none;
+        border: none;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .print-header {
+        text-align: center;
+        border-bottom: 2px solid #000;
+        padding-bottom: 10px;
+        margin-bottom: 16px;
+      }
+
+      .print-header h1 {
+        font-size: 1rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: .05em;
+      }
+
+      .print-header p {
+        font-size: .8rem;
+      }
+
+      .print-section-title {
+        background: #000;
+        color: #fff;
+        font-size: .78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        padding: 4px 8px;
+        margin: 14px 0 8px;
+        letter-spacing: .04em;
+      }
+
+      .ptable {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: .8rem;
+      }
+
+      .ptable th,
+      .ptable td {
+        border: 1px solid #aaa;
+        padding: 5px 8px;
+      }
+
+      .ptable th {
+        background: #f0f0f0;
+        font-weight: 700;
+        text-align: left;
+      }
+
+      .ptable .right {
+        text-align: right;
+        font-family: monospace;
+      }
+
+      .ptable tr.total-row td {
+        font-weight: 900;
+        border-top: 2px solid #000;
+      }
+
+      .print-sig {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        margin-top: 30px;
+      }
+
+      .sig-block {
+        border-top: 1px solid #000;
+        padding-top: 6px;
+        font-size: .78rem;
+      }
+
+      .print-warn {
+        margin-top: 18px;
+        font-size: .71rem;
+        border: 1px solid #bbb;
+        padding: 8px;
+        border-radius: 4px;
+      }
+
+      .print-warn strong {
+        display: block;
+        margin-bottom: 3px;
+      }
+
+      .print-footer {
+        text-align: right;
+        font-size: .69rem;
+        color: #666;
+        margin-top: 14px;
+        border-top: 1px solid #ddd;
+        padding-top: 6px;
+      }
+    }
+
+    #printCard {
+      display: none;
+    }
+
+    /* hidden on screen */
+  </style>
+</head>
+
+<body>
+
+  <!-- ─── HERO ──────────────────────────────────────────────── -->
+  <div class="hero">
+    <div class="hero-inner">
+      <div>
+        <div class="hero-badge">⚖️ LAB 2 · Derecho Empresarial e Informático · UGB 2026</div>
+        <h1 class="hero-title">Calculadora de <span>Prestaciones</span><br>Laborales · El Salvador</h1>
+        <p class="hero-sub">Calcula vacación proporcional, aguinaldo, indemnización, horas extras, asuetos y días de
+          descanso conforme al Código de Trabajo de El Salvador. Genera comprobante exportable en PDF.</p>
+      </div>
+      <button class="theme-btn" id="themeToggle">🌙 Modo Oscuro</button>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- Casos rápidos jerárquicos -->
+    <div class="quick-bar-wrapper">
+      <div class="quick-bar-head">
+        <div class="qb-title">
+          <span>⚡ Casos de Prueba y Modelos de Estudio</span>
+          <span class="qb-sub">Carga automatizada con un solo clic conforme al Código de Trabajo y Material Bloque 3 UGB</span>
+        </div>
+        <button type="button" class="qbtn qbtn-reset" onclick="resetAll()">↺ Limpiar Todo</button>
+      </div>
+
+      <div class="quick-bar-groups">
+        <div class="qb-group">
+          <span class="qb-group-lbl">📚 Casos de Clase &amp; Documentos:</span>
+          <div class="qb-group-btns">
+            <button type="button" class="qbtn qbtn-primary" onclick="loadCase(7)">⭐ Caso Libro UGB ($600 · 6a 9m)</button>
+            <button type="button" class="qbtn qbtn-highlight" onclick="loadCase(8)">🏖️ Vacaciones Adeudadas + San Miguel + Aguinaldo 1-Oct</button>
+            <button type="button" class="qbtn" onclick="loadCase(5)">📄 Roberto Aguilar (PDF Modelo $4,000)</button>
+            <button type="button" class="qbtn" onclick="loadCase(6)">📸 Caso Captura ($700 · 2a 6m 15d)</button>
+          </div>
+        </div>
+
+        <div class="qb-group">
+          <span class="qb-group-lbl">⚖️ Escenarios por Causal Contractual:</span>
+          <div class="qb-group-btns">
+            <button type="button" class="qbtn" onclick="loadCase(1)">1· Despido Injustificado (Art. 58)</button>
+            <button type="button" class="qbtn" onclick="loadCase(2)">2· Despido Justificado (Art. 50)</button>
+            <button type="button" class="qbtn" onclick="loadCase(3)">3· Renuncia Voluntaria (&lt;4 años = $0)</button>
+            <button type="button" class="qbtn" onclick="loadCase(4)">4· Renuncia Voluntaria (≥4 años)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="layout">
+      <!-- ── IZQUIERDA: FORMULARIO ───────────────────────────── -->
+      <main>
+        <form id="calcForm" onsubmit="return false;">
+
+          <!-- BLOQUE 1: PASO 1 DE 5 -->
+          <div class="card" id="cardBloque1">
+            <div class="card-head">
+              <div class="c-icon ci-blue">💼</div>
+              <div style="flex:1;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; flex-wrap:wrap; gap:6px;">
+                  <span class="step-pill">PASO 1 DE 5</span>
+                  <span class="legal-badge">Arts. 140, 161, 168 CT</span>
+                </div>
+                <h2>Datos del Trabajador, Fechas y Salario</h2>
+                <p>Información contractual y cómputo automático de antigüedad</p>
+              </div>
+            </div>
+            <div class="form-grid">
+              <div class="fg span2">
+                <label for="nombreTrabajador">Nombre completo de la persona trabajadora</label>
+                <input id="nombreTrabajador" type="text" placeholder="Ej. Ana Cecilia Martínez"
+                  value="Ana Cecilia Martínez">
+              </div>
+              <div class="fg">
+                <label for="patrono">Patrono / Empresa o Razón Social</label>
+                <input id="patrono" type="text" placeholder="Ej. Corporación ABC S.A. de C.V."
+                  value="Corporación ABC S.A. de C.V.">
+              </div>
+              <div class="fg">
+                <label for="cargo">Cargo o puesto desempeñado</label>
+                <input id="cargo" type="text" placeholder="Ej. Analista Contable" value="Analista Contable">
+              </div>
+              <div class="fg">
+                <label for="fechaIngreso">Fecha de ingreso a laborar</label>
+                <input id="fechaIngreso" type="date" value="2019-04-01" onchange="onFechaIngresoChange()">
+                <span class="hint">Inicio de la relación laboral</span>
+              </div>
+              <div class="fg">
+                <label for="fechaTermino">Fecha de terminación o despido</label>
+                <input id="fechaTermino" type="date" value="2026-09-28" onchange="onFechaTerminoChange()">
+                <span class="hint">Cierre de la relación laboral (≥ Fecha ingreso)</span>
+              </div>
+
+              <!-- ── SUB-BARRA DE TIEMPO Y SALARIO ── -->
+              <div class="span2" style="grid-column: 1 / -1; margin-top: 10px;">
+                <div class="section-subbar">
+                  <span>1. Datos Temporales y Salariales</span>
+                  <span class="badge-lock">🔒 Sincronizado e Inamovible (Art. 58 CT)</span>
+                </div>
+                <div class="form-grid-4">
+                  <div class="fg">
+                    <label for="salario">Salario Mensual (USD):</label>
+                    <input id="salario" type="number" step="0.01" min="0" value="700.00" oninput="calculate()">
+                    <span class="hint" id="salarioHint">SBD: $23.33/día · Mínimo: $365.00</span>
+                  </div>
+                  <div class="fg">
+                    <label for="anios">Años Laborados: <span class="badge-lock" style="font-size:0.62rem;padding:1px 5px;">🔒 Inamovible</span></label>
+                    <input id="anios" type="number" class="input-locked" readonly tabindex="-1" value="7" oninput="calculate()">
+                    <span class="hint" id="aniosHint">Años completos</span>
+                  </div>
+                  <div class="fg">
+                    <label for="meses">Meses Fraccionados (0-11): <span class="badge-lock" style="font-size:0.62rem;padding:1px 5px;">🔒 Inamovible</span></label>
+                    <input id="meses" type="number" class="input-locked" readonly tabindex="-1" value="5" oninput="calculate()">
+                    <span class="hint" id="mesesHint">Fracción meses</span>
+                  </div>
+                  <div class="fg">
+                    <label for="dias">Días Fraccionados (0-29): <span class="badge-lock" style="font-size:0.62rem;padding:1px 5px;">🔒 Inamovible</span></label>
+                    <input id="dias" type="number" class="input-locked" readonly tabindex="-1" value="27" oninput="calculate()">
+                    <span class="hint" id="diasHint">Fracción días</span>
+                  </div>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; font-size:.73rem; color:var(--text-muted); flex-wrap:wrap; gap:6px;">
+                  <span id="antiguedadHint">Antigüedad computada: 7 años, 5 meses, 27 días (Fracción comercial: 177 días)</span>
+                  <button type="button" id="btnToggleManual" style="background:none; border:none; color:var(--blue); cursor:pointer; text-decoration:underline; font-size:.71rem; font-weight:600;" onclick="toggleManualAntiguedad()">⚙️ Ajuste manual excepcional</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- FÓRMULAS GRÁFICAS DEL PASO 1 -->
+            <div class="step-formula-box" id="formulaBoxPaso1">
+              <div class="step-formula-title">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span class="step-pill">FÓRMULAS PASO 1</span>
+                  <strong style="font-size:0.83rem;">Salario Base y Tiempo Fraccionado</strong>
+                </div>
+                <span class="legal-badge">Arts. 140, 161, 168 CT</span>
+              </div>
+              
+              <div class="formula-math-display">
+                <div class="math-row">
+                  <span class="math-label">Salario Básico Diario (SBD)</span>
+                  <span class="math-chip sbd">SBD</span>
+                  <span class="math-op">=</span>
+                  <span class="math-fraction">
+                    <span class="num"><span class="math-chip sbm">SBM</span></span>
+                    <span class="den">30</span>
+                  </span>
+                  <span style="color:var(--text-muted); font-size:0.7rem; margin-left:auto;">Art. 140 CT (Mes comercial de 30 días)</span>
+                </div>
+
+                <div class="math-row">
+                  <span class="math-label">Hora Ordinaria Diurna (SHD)</span>
+                  <span class="math-chip sbd">SHD</span>
+                  <span class="math-op">=</span>
+                  <span class="math-fraction">
+                    <span class="num"><span class="math-chip sbd">SBD</span></span>
+                    <span class="den">8</span>
+                  </span>
+                  <span style="color:var(--text-muted); font-size:0.7rem; margin-left:auto;">Jornada diurna máx. 8 hrs (Art. 161 CT)</span>
+                </div>
+
+                <div class="math-row">
+                  <span class="math-label">Hora Ordinaria Nocturna (SHN)</span>
+                  <span class="math-chip sbd">SHN</span>
+                  <span class="math-op">=</span>
+                  <span class="math-chip sbd">SHD</span>
+                  <span class="math-op">×</span>
+                  <span class="math-chip time">1.25</span>
+                  <span style="color:var(--text-muted); font-size:0.7rem; margin-left:auto;">Recargo 25% trabajo nocturno (Art. 168 CT)</span>
+                </div>
+
+                <div class="math-row">
+                  <span class="math-label">Días Fraccionados Totales (DFT)</span>
+                  <span class="math-chip res">DFT</span>
+                  <span class="math-op">=</span>
+                  <span>(</span><span class="math-chip time">Meses</span>
+                  <span class="math-op">×</span>
+                  <span>30)</span>
+                  <span class="math-op">+</span>
+                  <span class="math-chip time">Días</span>
+                  <span style="color:var(--text-muted); font-size:0.7rem; margin-left:auto;">Año comercial 360 días (Libro UGB Bloque 3)</span>
+                </div>
+              </div>
+
+              <div class="formula-live">
+                <div class="live-subst-header">
+                  <span>⚡ Sustitución y Valores Dinámicos en Tiempo Real:</span>
+                </div>
+                <div class="subst-grid" id="liveFormulaPaso1">
+                  <!-- Inyectado dinámicamente -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BLOQUE 2: PASO 2 DE 5 -->
+          <div class="card" id="cardBloque2">
+            <div class="card-head">
+              <div class="c-icon ci-indigo">📋</div>
+              <div style="flex:1;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; flex-wrap:wrap; gap:6px;">
+                  <span class="step-pill" style="background:#4338ca;">PASO 2 DE 5</span>
+                  <span class="legal-badge">Arts. 50, 58 CT · Ley de Renuncia</span>
+                </div>
+                <h2>Causa de Finalización de la Relación Laboral</h2>
+                <p>Aplicación de Art. 58 CT (Despido Injustificado), Art. 50 CT (Justificado) o Ley de Renuncia</p>
+              </div>
+            </div>
+            <div class="fg">
+              <label style="font-weight:700;">Tipo de cierre contractual:</label>
+              <div class="radio-group">
+                <label class="radio-pill">
+                  <input type="radio" name="tipoCierre" value="despido_injusto" checked id="rDespidoInj" onchange="updateCierreUI()">
+                  <span class="rdot"></span>
+                  Despido INjustificado (Art. 58 CT)
+                </label>
+                <label class="radio-pill">
+                  <input type="radio" name="tipoCierre" value="despido_justo" id="rDespidoJus" onchange="updateCierreUI()">
+                  <span class="rdot"></span>
+                  Despido justificado (Art. 50 CT)
+                </label>
+                <label class="radio-pill">
+                  <input type="radio" name="tipoCierre" value="renuncia" id="rRenuncia" onchange="updateCierreUI()">
+                  <span class="rdot"></span>
+                  Renuncia voluntaria (Ley Reguladora)
+                </label>
+              </div>
+            </div>
+
+            <!-- Info box según selección de causa -->
+            <div id="boxFormulaCierre" style="margin-top:14px;"></div>
+
+            <!-- Preaviso: solo visible en renuncia voluntaria -->
+            <div id="sectionPreaviso"
+              style="display:none;margin-top:12px;padding:13px;border-radius:8px;background:var(--bg-subtle);border:1.5px solid var(--border);">
+              <div class="fg">
+                <label style="font-weight:700;">¿El trabajador notificó al patrono con la debida anticipación? (Preaviso escrito de ley)</label>
+                <div class="radio-group" style="margin-top:8px;">
+                  <label class="radio-pill">
+                    <input type="radio" name="preaviso" value="si" checked id="pSi" onchange="calculate()">
+                    <span class="rdot"></span>
+                    Sí — notificó formalmente por escrito con preaviso
+                  </label>
+                  <label class="radio-pill" style="border-color:#fca5a5;">
+                    <input type="radio" name="preaviso" value="no" id="pNo" onchange="calculate()">
+                    <span class="rdot" style="background:#dc2626;"></span>
+                    <strong style="color:#b91c1c;">No lo notificó (Bloqueo legal de compensación y trámite)</strong>
+                  </label>
+                </div>
+                <span class="hint" style="margin-top:8px;">Art. 401 CT &amp; Ley de Renuncia: El preaviso formal es requisito de ley para el trámite y pago de la compensación económica.</span>
+              </div>
+            </div>
+
+            <!-- Banner de bloqueo si preaviso == no -->
+            <div id="bannerBloqueoPreaviso" class="blocked-banner" style="display:none; margin-top:14px;">
+              <strong>⛔ TRÁMITE BLOQUEADO POR FALTA DE PREAVISO (Art. 401 Código de Trabajo)</strong>
+              El trabajador omitió la notificación previa de renuncia por escrito al empleador. De acuerdo a la normativa laboral salvadoreña, la compensación económica queda inhabilitada y el cálculo del comprobante se bloquea hasta subsanar la notificación legal.
+            </div>
+
+            <!-- FÓRMULAS GRÁFICAS DEL PASO 2 -->
+            <div class="step-formula-box" id="formulaBoxPaso2">
+              <div class="step-formula-title">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span class="step-pill" style="background:#4338ca;">FÓRMULAS PASO 2</span>
+                  <strong style="font-size:0.83rem;">Indemnización y Compensación Legal</strong>
+                </div>
+                <span class="legal-badge">Arts. 50, 58 CT · Ley de Renuncia</span>
+              </div>
+
+              <div class="formula-math-display">
+                <div class="math-row">
+                  <span class="math-label">Despido Injustificado (Art. 58 CT)</span>
+                  <span class="math-chip res">Indemnización</span>
+                  <span class="math-op">=</span>
+                  <span>(</span><span class="math-chip time">Años</span>
+                  <span class="math-op">×</span>
+                  <span class="math-chip sbm">SBM</span><span>)</span>
+                  <span class="math-op">+</span>
+                  <span>[</span>
+                  <span class="math-fraction">
+                    <span class="num"><span class="math-chip res">DFT</span></span>
+                    <span class="den">360</span>
+                  </span>
+                  <span class="math-op">×</span>
+                  <span class="math-chip sbm">SBM</span>
+                  <span>]</span>
+                </div>
+
+                <div class="math-row">
+                  <span class="math-label">Renuncia Voluntaria (≥4 años)</span>
+                  <span class="math-chip res">Compensación</span>
+                  <span class="math-op">=</span>
+                  <span>(</span><span class="math-chip time">Años</span>
+                  <span class="math-op">×</span>
+                  <span>15</span>
+                  <span class="math-op">×</span>
+                  <span class="math-chip sbd">SBD</span><span>)</span>
+                  <span class="math-op">+</span>
+                  <span>[</span>
+                  <span class="math-fraction">
+                    <span class="num"><span class="math-chip res">DFT</span></span>
+                    <span class="den">360</span>
+                  </span>
+                  <span class="math-op">×</span>
+                  <span>(15</span>
+                  <span class="math-op">×</span>
+                  <span class="math-chip sbd">SBD</span><span>)</span>
+                  <span>]</span>
+                </div>
+
+                <div class="math-row" style="background:rgba(225,29,72,.04); border-color:rgba(225,29,72,.2);">
+                  <span class="math-label" style="color:#b91c1c;">Exentos de Indemnización</span>
+                  <span style="font-size:0.73rem; color:var(--text-main);">
+                    • <strong>Despido Justificado (Art. 50 CT):</strong> $0.00 &nbsp;|&nbsp; • <strong>Renuncia &lt; 4 años:</strong> $0.00 &nbsp;|&nbsp; • <strong>Sin preaviso (Art. 401 CT):</strong> Bloqueo legal
+                  </span>
+                </div>
+              </div>
+
+              <div class="formula-live">
+                <div class="live-subst-header">
+                  <span>⚡ Sustitución y Valores Dinámicos en Tiempo Real:</span>
+                </div>
+                <div class="subst-grid" id="liveFormulaPaso2">
+                  <!-- Inyectado dinámicamente -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BLOQUE 3: PASO 3 DE 5 -->
+          <div class="card" id="cardBloque3">
+            <div class="card-head">
+              <div class="c-icon ci-green">🏖️</div>
+              <div style="flex:1;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; flex-wrap:wrap; gap:6px;">
+                  <span class="step-pill" style="background:#059669;">PASO 3 DE 5</span>
+                  <span class="legal-badge">Arts. 177, 187, 189, 196-200 CT</span>
+                </div>
+                <h2>Vacaciones y Aguinaldo Proporcionales</h2>
+                <p>Cálculo conforme a días de servicio efectivo acumulados y estado de goce</p>
+              </div>
+            </div>
+            <div class="form-grid">
+              <!-- APARTADO DE VACACIONES: Estado de goce / pago -->
+              <div class="fg span2" style="background:var(--bg-subtle); padding:12px; border-radius:8px; border:1px solid var(--border);">
+                <label style="font-weight:700;">¿El trabajador ya había gozado sus vacaciones del año anterior o no se las habían pagado?</label>
+                <div class="radio-group" style="margin-top:6px;">
+                  <label class="radio-pill">
+                    <input type="radio" name="estadoVacAnterior" value="gozada" checked id="vGozada" onchange="calculate()">
+                    <span class="rdot"></span>
+                    Ya las había gozado / pagadas (Solo liquidar vacación proporcional actual)
+                  </label>
+                  <label class="radio-pill" style="border-color:#f59e0b;">
+                    <input type="radio" name="estadoVacAnterior" value="pendiente" id="vPendiente" onchange="calculate()">
+                    <span class="rdot" style="background:#d97706;"></span>
+                    <strong style="color:#b45309;">No se las habían pagado / Adeudadas (+15 días con 30% prima completa)</strong>
+                  </label>
+                </div>
+                <span class="hint" style="margin-top:6px;">Arts. 177, 187 y 189 CT: Si cumplió el año de servicio y no disfrutó ni le fueron pagadas sus vacaciones, el patrono debe cancelar la vacación completa vencida (15 días + 30% prima = SBD × 15 × 1.30) más la vacación proporcional acumulada.</span>
+              </div>
+
+              <div class="fg span2">
+                <label for="ultimaVacacion">Fecha de corte de últimas vacaciones gozadas <em
+                    style="font-weight:400;color:var(--text-muted);">(o fecha de ingreso si nunca gozó vacaciones)</em></label>
+                <input id="ultimaVacacion" type="date" value="2025-04-01" onchange="onUltimaVacacionChange()">
+                <span class="hint" id="hintVacaciones">Se computa desde esta fecha de corte hasta la fecha de terminación laboral.</span>
+              </div>
+
+              <!-- APARTADO DE AGUINALDO: A partir del 01 de octubre / Reforma Legal -->
+              <div class="fg span2" style="padding:12px 14px; border-radius:8px; background:var(--bg-subtle); border:1.5px solid var(--border);">
+                <div style="font-weight:700; font-size:.82rem; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+                  <span>🎁 Parámetros de Aguinaldo Proporcional</span>
+                  <span class="badge-lock" style="font-size:0.62rem;">📅 Reforma Legal: Período de pago a partir del 01 de Octubre (Art. 200 CT)</span>
+                </div>
+                <div class="form-grid">
+                  <div class="fg">
+                    <label for="modoAgui">Modalidad de cómputo del aguinaldo:</label>
+                    <select id="modoAgui" onchange="onModoAguiChange()" style="width:100%; padding:8px 10px; border-radius:6px; border:1px solid var(--border); font-size:.8rem; background:var(--bg-card); color:var(--text-main);">
+                      <option value="reforma_oct" selected>A partir del 01 de Octubre (Reforma legal Art. 200 Código de Trabajo)</option>
+                      <option value="tradicional_dic">A partir del 12 de Diciembre (Ciclo tradicional / Caso Libro UGB pág. 15)</option>
+                      <option value="fraccion">Por fracción de antigüedad del contrato ((Meses×30)+Días)</option>
+                      <option value="personalizado">Fecha personalizada de inicio de período</option>
+                    </select>
+                    <span class="hint" id="hintModoAgui">Cómputo conforme al plazo legal reformado que autoriza el pago desde el 01 de octubre</span>
+                  </div>
+                  <div class="fg" id="fgCorteAgui">
+                    <label for="fechaCorteAgui">Fecha de inicio del ciclo de aguinaldo:</label>
+                    <input id="fechaCorteAgui" type="date" value="2025-10-01" onchange="calculate()">
+                    <span class="hint" id="hintFechaAgui">Inicio del ciclo de aguinaldo: 01 de octubre (Art. 200 CT reformado)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="infoVacResult"
+              style="margin-top:12px;padding:10px 13px;border-radius:8px;font-size:.8rem;background:var(--blue-light);border:1px solid var(--blue-border);color:var(--blue);">
+            </div>
+
+            <!-- FÓRMULAS GRÁFICAS DEL PASO 3 -->
+            <div class="step-formula-box" id="formulaBoxPaso3">
+              <div class="step-formula-title">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span class="step-pill" style="background:#059669;">FÓRMULAS PASO 3</span>
+                  <strong style="font-size:0.83rem;">Vacación y Aguinaldo Proporcionales</strong>
+                </div>
+                <span class="legal-badge">Arts. 177, 187, 189, 196-200 CT</span>
+              </div>
+
+              <div class="formula-math-display">
+                <div class="math-row">
+                  <span class="math-label">Vacación Proporcional</span>
+                  <span class="math-chip res">Vac. Prop.</span>
+                  <span class="math-op">=</span>
+                  <span class="math-fraction">
+                    <span class="num"><span class="math-chip time">Días Acumulados</span></span>
+                    <span class="den">360</span>
+                  </span>
+                  <span class="math-op">×</span>
+                  <span>15 días</span>
+                  <span class="math-op">×</span>
+                  <span class="math-chip sbd">SBD</span>
+                  <span class="math-op">×</span>
+                  <span class="math-chip time">1.30 (+30% prima)</span>
+                </div>
+
+                <div class="math-row" style="background:rgba(217,119,6,.05); border-color:rgba(217,119,6,.2);">
+                  <span class="math-label" style="color:#b45309;">Vacación Vencida No Pagada</span>
+                  <span class="math-chip res">Vac. Adeudada</span>
+                  <span class="math-op">=</span>
+                  <span>15 días base</span>
+                  <span class="math-op">×</span>
+                  <span class="math-chip sbd">SBD</span>
+                  <span class="math-op">×</span>
+                  <span class="math-chip time">1.30 (+30% prima)</span>
+                  <span style="color:var(--text-muted); font-size:0.7rem; margin-left:auto;">Art. 189 CT (Año cumplido no gozado)</span>
+                </div>
+
+                <div class="math-row">
+                  <span class="math-label">Aguinaldo Proporcional</span>
+                  <span class="math-chip res">Aguinaldo</span>
+                  <span class="math-op">=</span>
+                  <span class="math-fraction">
+                    <span class="num"><span class="math-chip time">Días Período (desde 01-Oct / Fracc.)</span></span>
+                    <span class="den">360</span>
+                  </span>
+                  <span class="math-op">×</span>
+                  <span>(</span><span class="math-chip time">Días Base [15/19/21]</span>
+                  <span class="math-op">×</span>
+                  <span class="math-chip sbd">SBD</span><span>)</span>
+                </div>
+
+                <div class="math-row" style="font-size:0.72rem; color:var(--text-muted);">
+                  <span class="math-label">Escala Aguinaldo (Art. 198)</span>
+                  <span>• 1 a &lt;3 años: <strong>15 días</strong> &nbsp;|&nbsp; • 3 a 10 años: <strong>19 días</strong> &nbsp;|&nbsp; • &gt;10 años: <strong>21 días</strong> &nbsp;|&nbsp; <em>Reforma Art. 200 CT: Período desde 01-octubre</em></span>
+                </div>
+              </div>
+
+              <div class="formula-live">
+                <div class="live-subst-header">
+                  <span>⚡ Sustitución y Valores Dinámicos en Tiempo Real:</span>
+                </div>
+                <div class="subst-grid" id="liveFormulaPaso3">
+                  <!-- Inyectado dinámicamente -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BLOQUE 4: PASO 4 DE 5 -->
+          <div class="card" id="cardBloque4">
+            <div class="card-head">
+              <div class="c-icon ci-amber" style="background:rgba(217,119,6,.1);">📅</div>
+              <div style="flex:1;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; flex-wrap:wrap; gap:6px;">
+                  <span class="step-pill" style="background:#d97706;">PASO 4 DE 5</span>
+                  <span class="legal-badge">Arts. 190, 192 CT</span>
+                </div>
+                <h2>Días de Asueto Nacional Laborados</h2>
+                <p>Selecciona los 15 asuetos nacionales de ley en que el trabajador prestó servicios (Art. 192 CT)</p>
+              </div>
+            </div>
+            <div class="toggle-row" id="toggleSinAsueto">
+              <div class="toggle-info">No aplica — no laboró en ningún asueto nacional
+                <small>Activa si el trabajador descansó en todos los días feriados oficiales</small>
+              </div>
+              <div class="tsw"></div>
+            </div>
+            <div id="asuetosSection" style="margin-top:14px;">
+              <div style="font-size:.77rem;font-weight:600;margin-bottom:8px;">Marca los días de asueto en que laboró (Remuneración doble = SBD × 2):</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;" id="asuetoGrid"></div>
+              <div style="font-size:.72rem;color:var(--text-muted);margin-top:8px;" id="asuetoCount">0 días seleccionados</div>
+              <div style="margin-top:8px; font-size:.73rem; color:var(--text-muted); background:var(--bg-subtle); padding:6px 10px; border-radius:6px; border:1px solid var(--border);">
+                📍 <strong>Fiestas Patronales Municipales (Art. 190 inc. 2 CT):</strong> En San Miguel, la fiesta patronal oficial se celebra en noviembre: <strong>21 de noviembre – Día de la Virgen de la Paz (Carnaval de San Miguel)</strong>.
+              </div>
+            </div>
+
+            <!-- FÓRMULAS GRÁFICAS DEL PASO 4 -->
+            <div class="step-formula-box" id="formulaBoxPaso4">
+              <div class="step-formula-title">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span class="step-pill" style="background:#d97706;">FÓRMULAS PASO 4</span>
+                  <strong style="font-size:0.83rem;">Remuneración de Asuetos Nacionales</strong>
+                </div>
+                <span class="legal-badge">Arts. 190, 192 CT</span>
+              </div>
+
+              <div class="formula-math-display">
+                <div class="math-row">
+                  <span class="math-label">Pago de Asueto Laborado</span>
+                  <span class="math-chip res">Monto Asuetos</span>
+                  <span class="math-op">=</span>
+                  <span class="math-chip time">Días Asueto Marcados</span>
+                  <span class="math-op">×</span>
+                  <span>(</span><span class="math-chip sbd">SBD</span>
+                  <span class="math-op">×</span>
+                  <span class="math-chip time">2 [Remuneración Doble]</span><span>)</span>
+                </div>
+                <div class="math-row" style="font-size:0.72rem; color:var(--text-muted);">
+                  <span class="math-label">Fundamento Legal</span>
+                  <span>El salario ordinario ya cubre el descanso; prestar servicio genera remuneración ordinaria + salario extraordinario con 100% de recargo (Art. 192 CT). Incluye 21 de noviembre en San Miguel.</span>
+                </div>
+              </div>
+
+              <div class="formula-live">
+                <div class="live-subst-header">
+                  <span>⚡ Sustitución y Valores Dinámicos en Tiempo Real:</span>
+                </div>
+                <div class="subst-grid" id="liveFormulaPaso4">
+                  <!-- Inyectado dinámicamente -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BLOQUE 5: PASO 5 DE 5 -->
+          <div class="card" id="cardBloque5">
+            <div class="card-head">
+              <div class="c-icon ci-purple" style="background:rgba(124,58,237,.1);color:#7c3aed;">⏱️</div>
+              <div style="flex:1;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; flex-wrap:wrap; gap:6px;">
+                  <span class="step-pill" style="background:#7c3aed;">PASO 5 DE 5</span>
+                  <span class="legal-badge">Arts. 168, 169, 175-176 CT</span>
+                </div>
+                <h2>Jornadas Extraordinarias <span class="tag-no-pagado">NO PAGADAS / ADEUDADAS</span></h2>
+                <p>Horas extras y descansos semanales laborados pendientes de liquidar (Arts. 168, 169, 175-176 CT)</p>
+              </div>
+            </div>
+            <div class="toggle-row" id="toggleNoAplica">
+              <div class="toggle-info">No aplica — sin horas extras ni descanso trabajado pendiente
+                <small>Activa si ya fueron canceladas en su momento o no hubo jornada extraordinaria</small>
+              </div>
+              <div class="tsw"></div>
+            </div>
+            <div id="hextSection" style="margin-top:14px;">
+              <div class="xs">
+                <div class="xs-title" style="display:flex; justify-content:space-between; align-items:center;">
+                  <span>Horas extraordinarias adeudadas</span>
+                  <span class="tag-no-pagado">NO PAGADAS</span>
+                </div>
+                <div class="form-grid">
+                  <div class="fg">
+                    <label for="hExtDiurnas">Horas extras diurnas no pagadas (6:00 a.m. – 7:00 p.m.)</label>
+                    <input id="hExtDiurnas" type="number" min="0" step=".5" value="10" oninput="calculate()">
+                    <span class="hint" id="hintDiurnas">Recargo 100%: SHD × 2 (Art. 169 CT)</span>
+                  </div>
+                  <div class="fg">
+                    <label for="hExtNocturnas">Horas extras nocturnas no pagadas (7:00 p.m. – 6:00 a.m.)</label>
+                    <input id="hExtNocturnas" type="number" min="0" step=".5" value="5" oninput="calculate()">
+                    <span class="hint" id="hintNocturnas">Recargo 100% sobre hora nocturna: SHN × 2 (Arts. 168 y 169 CT)</span>
+                  </div>
+                </div>
+              </div>
+              <div class="xs">
+                <div class="xs-title" style="display:flex; justify-content:space-between; align-items:center;">
+                  <span>Días de descanso semanal laborados adeudados</span>
+                  <span class="tag-no-pagado">NO PAGADOS</span>
+                </div>
+                <div class="form-grid">
+                  <div class="fg">
+                    <label for="diasDescanso">Días de descanso semanal (7.° día) no pagados</label>
+                    <input id="diasDescanso" type="number" min="0" step="0.5" value="1" oninput="calculate()">
+                    <span class="hint">Salario doble: SBD × 2 (Arts. 175-176 CT)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- FÓRMULAS GRÁFICAS DEL PASO 5 -->
+            <div class="step-formula-box" id="formulaBoxPaso5">
+              <div class="step-formula-title">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span class="step-pill" style="background:#7c3aed;">FÓRMULAS PASO 5</span>
+                  <strong style="font-size:0.83rem;">Jornadas Extraordinarias No Pagadas / Adeudadas</strong>
+                </div>
+                <span class="legal-badge">Arts. 168, 169, 175-176 CT</span>
+              </div>
+
+              <div class="formula-math-display">
+                <div class="math-row">
+                  <span class="math-label">Hora Extra Diurna</span>
+                  <span class="math-chip res">Subtotal HED</span>
+                  <span class="math-op">=</span>
+                  <span class="math-chip time">Horas HED</span>
+                  <span class="math-op">×</span>
+                  <span>(</span><span class="math-chip sbd">SHD</span>
+                  <span class="math-op">×</span>
+                  <span class="math-chip time">2 [Recargo 100%]</span><span>)</span>
+                  <span style="color:var(--text-muted); font-size:0.7rem; margin-left:auto;">Art. 169 CT</span>
+                </div>
+
+                <div class="math-row">
+                  <span class="math-label">Hora Extra Nocturna</span>
+                  <span class="math-chip res">Subtotal HEN</span>
+                  <span class="math-op">=</span>
+                  <span class="math-chip time">Horas HEN</span>
+                  <span class="math-op">×</span>
+                  <span>(</span><span class="math-chip sbd">SHN</span>
+                  <span class="math-op">×</span>
+                  <span class="math-chip time">2</span><span>)</span>
+                  <span class="math-op">=</span>
+                  <span class="math-chip time">Horas</span>
+                  <span class="math-op">×</span>
+                  <span>(</span><span class="math-chip sbd">SHD</span>
+                  <span class="math-op">×</span>
+                  <span class="math-chip time">2.50</span><span>)</span>
+                  <span style="color:var(--text-muted); font-size:0.7rem; margin-left:auto;">Arts. 168 y 169 CT</span>
+                </div>
+
+                <div class="math-row">
+                  <span class="math-label">7.° Día de Descanso Laborado</span>
+                  <span class="math-chip res">Subtotal Descanso</span>
+                  <span class="math-op">=</span>
+                  <span class="math-chip time">Días Descanso</span>
+                  <span class="math-op">×</span>
+                  <span>(</span><span class="math-chip sbd">SBD</span>
+                  <span class="math-op">×</span>
+                  <span class="math-chip time">2 [Salario Doble]</span><span>)</span>
+                  <span style="color:var(--text-muted); font-size:0.7rem; margin-left:auto;">Arts. 175-176 CT</span>
+                </div>
+              </div>
+
+              <div class="formula-live">
+                <div class="live-subst-header">
+                  <span>⚡ Sustitución y Valores Dinámicos en Tiempo Real:</span>
+                </div>
+                <div class="subst-grid" id="liveFormulaPaso5">
+                  <!-- Inyectado dinámicamente -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </main>
+
+      <!-- ── DERECHA: RESULTADOS ─────────────────────────────── -->
+      <aside class="sidebar">
+
+        <!-- Banner de bloqueo en sidebar si preaviso == no -->
+        <div id="sideBannerBloqueo" class="blocked-banner" style="display:none; margin-bottom:14px;">
+          <strong>⛔ LIQUIDACIÓN BLOQUEADA</strong>
+          El trabajador omitió el preaviso legal (Art. 401 CT). No procede emisión de compensación económica ni impresión de comprobante.
+        </div>
+
+        <!-- Hero total -->
+        <div class="liq-card" id="liqCardHero">
+          <div class="liq-lbl">Total Devengado (Bruto)</div>
+          <div class="liq-bruto" id="lblBruto">$0.00</div>
+          <div class="liq-neto-row">
+            <div class="liq-neto-item">
+              <span>Deducciones</span>
+              <div class="liq-neto-val red" id="lblDedTotal">-$0.00</div>
+            </div>
+            <div class="liq-neto-item">
+              <span>Neto a Pagar</span>
+              <div class="liq-neto-val green" id="lblNetoHero">$0.00</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Desglose -->
+        <div class="card" id="sidebarCardDesglose">
+          <div class="card-head" style="margin-bottom:4px;">
+            <div>
+              <h2>Desglose de Prestaciones</h2>
+              <p id="lblNombreResult">—</p>
+            </div>
+          </div>
+
+          <div class="ledger">
+            <div class="ldg-gtitle">Prestaciones proporcionales y adeudadas</div>
+            <div class="ldg-row" id="rowVacCompleta" style="display:none;">
+              <div class="ldg-lbl">Vacación completa no pagada<small id="descVacCompleta">15 días + 30% prima (Art. 189 CT)</small></div>
+              <div class="ldg-val v-emerald" id="lblVacCompleta">$0.00</div>
+            </div>
+            <div class="ldg-row">
+              <div class="ldg-lbl">Vacación proporcional<small id="descVacacion">—</small></div>
+              <div class="ldg-val v-emerald" id="lblVacacion">$0.00</div>
+            </div>
+            <div class="ldg-row">
+              <div class="ldg-lbl">Aguinaldo proporcional<small id="descAguinaldo">—</small></div>
+              <div class="ldg-val v-emerald" id="lblAguinaldo">$0.00</div>
+            </div>
+
+            <div class="ldg-gtitle">Compensación por finalización</div>
+            <div class="ldg-row">
+              <div class="ldg-lbl"><span id="lblCompLabel">Indemnización</span><small id="descComp">—</small></div>
+              <div class="ldg-val v-emerald" id="lblComp">$0.00</div>
+            </div>
+
+            <div class="ldg-gtitle">Jornadas extraordinarias no pagadas</div>
+            <div class="ldg-row">
+              <div class="ldg-lbl">Horas extras diurnas<small id="descHD">—</small></div>
+              <div class="ldg-val v-emerald" id="lblHD">$0.00</div>
+            </div>
+            <div class="ldg-row">
+              <div class="ldg-lbl">Horas extras nocturnas<small id="descHN">—</small></div>
+              <div class="ldg-val v-emerald" id="lblHN">$0.00</div>
+            </div>
+
+            <div class="ldg-gtitle">Días especiales</div>
+            <div class="ldg-row">
+              <div class="ldg-lbl">Días de asueto laborados<small id="descAsue">—</small></div>
+              <div class="ldg-val v-emerald" id="lblAsue">$0.00</div>
+            </div>
+            <div class="ldg-row">
+              <div class="ldg-lbl">Días de descanso semanal<small id="descDesc">—</small></div>
+              <div class="ldg-val v-emerald" id="lblDesc">$0.00</div>
+            </div>
+
+            <div class="ldg-gtitle">Deducciones de ley</div>
+            <div class="ldg-row">
+              <div class="ldg-lbl">Cotización ISSS (trabajador 3%)<small id="descIsss">—</small></div>
+              <div class="ldg-val v-rose" id="lblIsss">-$0.00</div>
+            </div>
+            <div class="ldg-row">
+              <div class="ldg-lbl">Cotización AFP (trabajador 7.25%)<small id="descAfp">—</small></div>
+              <div class="ldg-val v-rose" id="lblAfp">-$0.00</div>
+            </div>
+            <div class="ldg-row">
+              <div class="ldg-lbl">Retención ISR<small id="descIsr">—</small></div>
+              <div class="ldg-val v-rose" id="lblIsr">-$0.00</div>
+            </div>
+
+            <div class="ldg-total">
+              <span>Monto Neto a Pagar</span>
+              <span class="ldg-val" id="lblNeto">$0.00</span>
+            </div>
+          </div>
+
+          <!-- Memoria de cálculo de deducciones -->
+          <div class="step-formula-box" style="margin-top:14px; margin-bottom:14px;">
+            <div class="step-formula-title">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span class="step-pill" style="background:#e11d48;">DEDUCCIONES</span>
+                <strong style="font-size:0.8rem;">Retenciones Obligatorias</strong>
+              </div>
+              <span class="legal-badge">Art. 37 LISR</span>
+            </div>
+            
+            <div class="formula-math-display">
+              <div class="math-row" style="font-size:0.71rem; padding:6px 10px;">
+                <span class="math-label" style="min-width:105px;">ISSS (3%)</span>
+                <span>Mín(<span class="math-chip sbm">Base Gravada</span>, $1,000) × 0.03</span>
+              </div>
+              <div class="math-row" style="font-size:0.71rem; padding:6px 10px;">
+                <span class="math-label" style="min-width:105px;">AFP (7.25%)</span>
+                <span>Mín(<span class="math-chip sbm">Base Gravada</span>, $6,523.20) × 0.0725</span>
+              </div>
+              <div class="math-row" style="font-size:0.71rem; padding:6px 10px;">
+                <span class="math-label" style="min-width:105px;">ISR Retención</span>
+                <span>Tabla Art. 37 LISR s/ Base neta de cotizaciones</span>
+              </div>
+            </div>
+
+            <div class="formula-live">
+              <div class="live-subst-header">
+                <span>⚡ Liquidación Fiscal y Previsional:</span>
+              </div>
+              <div class="subst-grid" id="liveFormulaDed">
+                <!-- Inyectado dinámicamente -->
+              </div>
+            </div>
+          </div>
+
+          <div class="base-legal">
+            <strong>📚 Base legal aplicable</strong>
+            Arts. 177, 187 CT – Vacaciones · Arts. 196-198 CT – Aguinaldo · Art. 58 CT – Indemnización/Compensación ·
+            Art. 169 CT – Horas extraordinarias · Art. 192 CT – Asuetos · Arts. 175-176 CT – Descanso semanal · Art. 29
+            Regl. ISSS · Ley SAP – AFP · Art. 37 Ley ISR · Art. 401 CT – Preaviso
+          </div>
+
+          <button class="export-btn" id="btnExport" onclick="printComprobante()">
+            🖨️ Exportar Comprobante en PDF
+          </button>
+        </div>
+      </aside>
+    </div>
+
+    <!-- ── COMPROBANTE (solo visible al imprimir) ──────────── -->
+    <div id="printCard" class="card">
+      <div class="print-header">
+        <h1>Comprobante de Liquidación de Prestaciones Laborales</h1>
+        <p>República de El Salvador · Código de Trabajo</p>
+      </div>
+
+      <div class="print-section-title">I. Datos de las partes</div>
+      <table class="ptable">
+        <tr>
+          <th>Persona trabajadora</th>
+          <td id="pNombre">—</td>
+          <th>Patrono</th>
+          <td id="pPatrono">—</td>
+        </tr>
+        <tr>
+          <th>Cargo desempeñado</th>
+          <td id="pCargo">—</td>
+          <th>Salario mensual</th>
+          <td id="pSalario">—</td>
+        </tr>
+        <tr>
+          <th>Fecha de ingreso</th>
+          <td id="pIngreso">—</td>
+          <th>Fecha de terminación</th>
+          <td id="pTermino">—</td>
+        </tr>
+        <tr>
+          <th>Antigüedad reconocida</th>
+          <td id="pAntigüedad">—</td>
+          <th>Causa de terminación</th>
+          <td id="pCausa">—</td>
+        </tr>
+      </table>
+
+      <div class="print-section-title">II. Desglose de prestaciones liquidadas</div>
+      <table class="ptable">
+        <thead>
+          <tr>
+            <th>Concepto</th>
+            <th>Base legal</th>
+            <th class="right">Monto</th>
+          </tr>
+        </thead>
+        <tbody id="pDesglose"></tbody>
+        <tfoot>
+          <tr class="total-row">
+            <td colspan="2"><strong>TOTAL DEVENGADO (BRUTO)</strong></td>
+            <td class="right" id="pBrutoTotal">$0.00</td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <div class="print-section-title">III. Deducciones de ley y neto a pagar</div>
+      <div id="pDeduccionesNota" style="font-size:.79rem; margin-bottom:8px;"></div>
+      <table class="ptable">
+        <tbody id="pDeducciones"></tbody>
+        <tfoot>
+          <tr class="total-row">
+            <td colspan="2"><strong>MONTO NETO A PAGAR</strong></td>
+            <td class="right" id="pNetoTotal">$0.00</td>
+          </tr>
+        </tfoot>
+      </table>
+      <p style="margin-top:8px; font-size:.8rem; font-weight:700;" id="pNetoLetras"></p>
+
+      <div class="print-section-title">IV. Declaración</div>
+      <p id="pDeclaracion" style="font-size:.79rem; line-height:1.6; margin-bottom:14px;"></p>
+
+      <div class="print-sig">
+        <div class="sig-block">
+          <strong>Persona trabajadora</strong>
+          <p>Nombre: ________________________________</p>
+          <p>DUI: ___________________________________</p>
+          <p>Fecha: _________________________________</p>
+        </div>
+        <div class="sig-block">
+          <strong>Patrono o representante legal</strong>
+          <p>Nombre: ________________________________</p>
+          <p>DUI: ___________________________________</p>
+          <p>Fecha: _________________________________</p>
+        </div>
+      </div>
+
+      <div class="print-warn">
+        <strong>⚠️ Advertencia legal</strong>
+        Este documento es un comprobante informativo del cálculo de prestaciones y NO constituye el finiquito laboral.
+        Conforme al Art. 402 inciso 2 del Código de Trabajo, la renuncia, la terminación por mutuo consentimiento o el
+        recibo de pago de prestaciones por despido sin causa legal solo tienen valor probatorio si constan en hojas
+        extendidas por la Dirección General de Inspección de Trabajo o por los jueces con competencia en materia
+        laboral, utilizadas dentro de los diez días siguientes a su expedición, o bien en documento privado autenticado
+        ante notario. Se recomienda asesoría legal profesional antes de suscribir cualquier finiquito.
+      </div>
+
+      <div class="print-footer" id="pFooter"></div>
+    </div>
+
+    <footer>
+      Calculadora de Prestaciones Laborales · LAB 2 · Derecho Empresarial e Informático · UGB 2026 · Conforme al Código
+      de Trabajo de El Salvador
+    </footer>
+  </div>
+
+  <script>
+    /* ============================================================
+       LÓGICA – PRESTACIONES LABORALES EL SALVADOR (UGB 2026)
+       Código de Trabajo (CT) vigente & Material Bloque 3
+       ============================================================ */
+
+    const fmt = v => new Intl.NumberFormat('es-SV', { style: 'currency', currency: 'USD' }).format(v || 0);
+    const fmtN = v => Number(v).toFixed(2);
+    const g = id => document.getElementById(id);
+    const num = id => Math.max(0, parseFloat(g(id).value) || 0);
+
+    /* Constantes de Ley */
+    const ISSS_RATE = 0.03, ISSS_TOPE = 1000;
+    const AFP_RATE = 0.0725, AFP_TOPE = 6523.20;
+    const ISR_TABLA = [
+      { desde: 0, hasta: 487, cuota: 0, tasa: 0, sobre: 0 },
+      { desde: 487.01, hasta: 896, cuota: 17.67, tasa: 0.10, sobre: 487.01 },
+      { desde: 896.01, hasta: 2038.10, cuota: 58.57, tasa: 0.20, sobre: 896.01 },
+      { desde: 2038.11, hasta: Infinity, cuota: 286.61, tasa: 0.30, sobre: 2038.11 }
+    ];
+    function calcISR(b) {
+      const t = ISR_TABLA.find(x => b >= x.desde && b <= x.hasta);
+      return (!t || !t.tasa) ? 0 : Math.round((t.cuota + (b - t.sobre) * t.tasa) * 100) / 100;
+    }
+    function aguinaldoDias(a) {
+      return a < 3 ? 15 : a <= 10 ? 19 : 21;
+    }
+
+    /* 15 Asuetos Nacionales Oficiales en El Salvador (Art. 190 CT e inclusión del 21 de noviembre) */
+    const ASUETOS_SV = [
+      { id: 'asv01', nombre: '1 enero – Año Nuevo' },
+      { id: 'asv02', nombre: 'Jueves Santo' },
+      { id: 'asv03', nombre: 'Viernes Santo' },
+      { id: 'asv04', nombre: 'Sábado de Gloria' },
+      { id: 'asv05', nombre: '1 mayo – Día del Trabajo' },
+      { id: 'asv06', nombre: '10 mayo – Día de la Madre' },
+      { id: 'asv07', nombre: '17 junio – Día del Padre' },
+      { id: 'asv08', nombre: '3 agosto – Fiestas Agostinas' },
+      { id: 'asv09', nombre: '5 agosto – Fiestas Agostinas' },
+      { id: 'asv10', nombre: '6 agosto – Divino Salvador del Mundo' },
+      { id: 'asv11', nombre: '15 sept – Independencia Patria' },
+      { id: 'asv12', nombre: '2 nov – Día de los Difuntos' },
+      { id: 'asv13', nombre: '5 nov – Primer Grito de Independencia' },
+      { id: 'asv14', nombre: '21 nov – Virgen de la Paz (Fiesta Patronal de San Miguel / Carnaval)' },
+      { id: 'asv15', nombre: '25 dic – Navidad' }
+    ];
+
+    /* Renderizado interactivo de asuetos */
+    (function renderAsuetos() {
+      const grid = g('asuetoGrid');
+      if (!grid) return;
+      grid.innerHTML = ASUETOS_SV.map(a => {
+        const isSanMiguel = (a.id === 'asv14');
+        return `
+        <label style="display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:7px;
+          border:${isSanMiguel ? '2px solid #d97706' : '1.5px solid var(--border)'};cursor:pointer;font-size:.77rem;font-weight:${isSanMiguel ? '700' : '500'};
+          background:${isSanMiguel ? 'rgba(217,119,6,0.09)' : 'var(--bg-card)'};transition:all .15s;user-select:none;${isSanMiguel ? 'grid-column: 1 / -1; box-shadow: 0 1px 4px rgba(217,119,6,0.15);' : ''}" for="${a.id}">
+          <input type="checkbox" id="${a.id}" name="asueto" value="1" style="width:16px;height:16px;accent-color:#d97706;cursor:pointer;" onchange="calculate()">
+          <span>${a.nombre}</span>
+          ${isSanMiguel ? '<span style="margin-left:auto; background:#d97706; color:#fff; font-size:0.63rem; padding:2px 7px; border-radius:4px; font-weight:700; white-space:nowrap;">📍 SAN MIGUEL · FIESTA PATRONAL (UGB)</span>' : ''}
+        </label>`;
+      }).join('');
+    })();
+
+    function countAsuetos() {
+      return document.querySelectorAll('input[name="asueto"]:checked').length;
+    }
+
+    /* ── CÓMPUTO DE ANTIGÜEDAD Y DÍAS FRACCIONADOS ── */
+    function calcAntiguedad(fIngresoStr, fTerminoStr) {
+      if (!fIngresoStr || !fTerminoStr) return { anios: 0, meses: 0, dias: 0, totalDias: 0 };
+      const d1 = new Date(fIngresoStr + 'T00:00:00');
+      const d2 = new Date(fTerminoStr + 'T00:00:00');
+      if (isNaN(d1) || isNaN(d2) || d2 < d1) return { anios: 0, meses: 0, dias: 0, totalDias: 0 };
+
+      let y = d2.getFullYear() - d1.getFullYear();
+      let m = d2.getMonth() - d1.getMonth();
+      let d = d2.getDate() - d1.getDate();
+
+      if (d < 0) {
+        m--;
+        const prevMonthDays = new Date(d2.getFullYear(), d2.getMonth(), 0).getDate();
+        d += prevMonthDays;
+      }
+      if (m < 0) {
+        y--;
+        m += 12;
+      }
+
+      // Normalización comercial (0-11 meses, 0-29 días)
+      if (d >= 30) {
+        m += Math.floor(d / 30);
+        d = d % 30;
+      }
+      if (m >= 12) {
+        y += Math.floor(m / 12);
+        m = m % 12;
+      }
+
+      const diffMs = d2 - d1;
+      const totalDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      return { anios: Math.max(0, y), meses: Math.max(0, m), dias: Math.max(0, d), totalDias };
+    }
+
+    /* Modo de edición manual excepcional */
+    let isManualAntiguedad = false;
+    function toggleManualAntiguedad() {
+      isManualAntiguedad = !isManualAntiguedad;
+      const aniosInput = g('anios');
+      const mesesInput = g('meses');
+      const diasInput = g('dias');
+      const btn = g('btnToggleManual');
+
+      if (isManualAntiguedad) {
+        aniosInput.readOnly = false;
+        mesesInput.readOnly = false;
+        diasInput.readOnly = false;
+        aniosInput.tabIndex = 0;
+        mesesInput.tabIndex = 0;
+        diasInput.tabIndex = 0;
+        aniosInput.classList.remove('input-locked');
+        mesesInput.classList.remove('input-locked');
+        diasInput.classList.remove('input-locked');
+        btn.textContent = '🔒 Bloquear y volver al cálculo automático por fechas';
+        btn.style.color = '#dc2626';
+      } else {
+        aniosInput.readOnly = true;
+        mesesInput.readOnly = true;
+        diasInput.readOnly = true;
+        aniosInput.tabIndex = -1;
+        mesesInput.tabIndex = -1;
+        diasInput.tabIndex = -1;
+        aniosInput.classList.add('input-locked');
+        mesesInput.classList.add('input-locked');
+        diasInput.classList.add('input-locked');
+        btn.textContent = '⚙️ Ajuste manual excepcional';
+        btn.style.color = 'var(--blue)';
+        syncFechasAntiguedad();
+      }
+      calculate();
+    }
+
+    /* Sincronización íntegra de fechas y dependencias */
+    function syncFechasAntiguedad() {
+      const fIng = g('fechaIngreso').value;
+      let fTer = g('fechaTermino').value;
+
+      if (fIng && fTer) {
+        // Filtro 1: fechaTermino >= fechaIngreso
+        if (fTer < fIng) {
+          fTer = fIng;
+          g('fechaTermino').value = fIng;
+        }
+        g('fechaTermino').min = fIng;
+
+        // Filtro 2: fechaIngreso <= ultimaVacacion <= fechaTermino
+        g('ultimaVacacion').min = fIng;
+        g('ultimaVacacion').max = fTer;
+        if (g('ultimaVacacion').value < fIng) {
+          g('ultimaVacacion').value = fIng;
+        } else if (g('ultimaVacacion').value > fTer) {
+          g('ultimaVacacion').value = fTer;
+        }
+
+        // Cómputo automático e inamovible
+        if (!isManualAntiguedad) {
+          const { anios, meses, dias } = calcAntiguedad(fIng, fTer);
+          g('anios').value = anios;
+          g('meses').value = meses;
+          g('dias').value = dias;
+        }
+      }
+    }
+
+    function onFechaIngresoChange() {
+      syncFechasAntiguedad();
+      calculate();
+    }
+
+    function onFechaTerminoChange() {
+      syncFechasAntiguedad();
+      const modo = g('modoAgui') ? g('modoAgui').value : '';
+      if (modo === 'reforma_oct' || modo === 'tradicional_dic') {
+        onModoAguiChange(true);
+      }
+      calculate();
+    }
+
+    function onUltimaVacacionChange() {
+      const fIng = g('fechaIngreso').value;
+      const fTer = g('fechaTermino').value;
+      if (fIng && g('ultimaVacacion').value < fIng) g('ultimaVacacion').value = fIng;
+      if (fTer && g('ultimaVacacion').value > fTer) g('ultimaVacacion').value = fTer;
+      calculate();
+    }
+
+    /* Modalidad y Fecha de Inicio de Período de Aguinaldo */
+    function onModoAguiChange(syncDateOnly = false) {
+      const modo = g('modoAgui') ? g('modoAgui').value : 'reforma_oct';
+      const fTer = g('fechaTermino').value;
+      const dTer = fTer ? new Date(fTer + 'T00:00:00') : new Date();
+      const anioTer = dTer.getFullYear();
+      const fgCorte = g('fgCorteAgui');
+
+      if (modo === 'reforma_oct') {
+        if (fgCorte) fgCorte.style.display = 'block';
+        let anioInicio = anioTer;
+        const testOct = new Date(anioTer, 9, 1); // 1 de octubre
+        if (dTer < testOct) anioInicio = anioTer - 1;
+        if (!syncDateOnly || !g('fechaCorteAgui').value) {
+          g('fechaCorteAgui').value = `${anioInicio}-10-01`;
+        }
+        g('hintModoAgui').textContent = 'Reforma Art. 200 CT: Pago del aguinaldo a partir del 01 de octubre.';
+        g('hintFechaAgui').textContent = `Período computado desde el 01 de octubre de ${anioInicio} hasta el despido.`;
+      } else if (modo === 'tradicional_dic') {
+        if (fgCorte) fgCorte.style.display = 'block';
+        let anioInicio = anioTer;
+        const testDic = new Date(anioTer, 11, 12); // 12 de diciembre
+        if (dTer < testDic) anioInicio = anioTer - 1;
+        if (!syncDateOnly || !g('fechaCorteAgui').value) {
+          g('fechaCorteAgui').value = `${anioInicio}-12-12`;
+        }
+        g('hintModoAgui').textContent = 'Ciclo tradicional (12 dic a 20 dic) conforme al caso pág. 15 Libro UGB Bloque 3.';
+        g('hintFechaAgui').textContent = `Período computado desde el 12 de diciembre de ${anioInicio} hasta el despido.`;
+      } else if (modo === 'fraccion') {
+        if (fgCorte) fgCorte.style.display = 'none';
+        g('hintModoAgui').textContent = 'Cálculo por fracción comercial de meses y días del contrato laboral.';
+      } else {
+        if (fgCorte) fgCorte.style.display = 'block';
+        g('hintModoAgui').textContent = 'Ingresa libremente la fecha de inicio del período de aguinaldo a liquidar.';
+        g('hintFechaAgui').textContent = 'Fecha de inicio del ciclo acumulado de aguinaldo.';
+      }
+      calculate();
+    }
+
+    /* UI: Causa de finalización */
+    function updateCierreUI() {
+      const tipo = (document.querySelector('input[name="tipoCierre"]:checked') || {}).value || 'despido_injusto';
+      const box = g('boxFormulaCierre');
+      g('sectionPreaviso').style.display = tipo === 'renuncia' ? 'block' : 'none';
+
+      if (tipo === 'despido_injusto') {
+        box.innerHTML = '<div style="padding:11px 14px;border-radius:8px;background:var(--blue-light);border-left:3px solid var(--blue);font-size:.8rem;color:var(--blue);"><strong style="display:block;margin-bottom:4px;">📐 Indemnización por despido injustificado (Art. 58 CT)</strong>Años completos × SBM + Fracción comercial [(meses×30)+días] ÷ 360 × SBM.</div>';
+      } else if (tipo === 'despido_justo') {
+        box.innerHTML = '<div style="padding:11px 14px;border-radius:8px;background:rgba(225,29,72,.07);border-left:3px solid #e11d48;font-size:.8rem;color:#e11d48;"><strong style="display:block;margin-bottom:4px;">⚠️ Despido justificado (Art. 50 CT)</strong>El patrono NO paga indemnización cuando existe causa legal debidamente comprobada. Solo se liquidan prestaciones proporcionales y horas adeudadas.</div>';
+      } else {
+        box.innerHTML = '<div style="padding:11px 14px;border-radius:8px;background:rgba(5,150,105,.08);border-left:3px solid #059669;font-size:.8rem;color:#059669;"><strong style="display:block;margin-bottom:4px;">📋 Renuncia voluntaria (Ley Reguladora de Renuncia & Art. 58 CT)</strong><strong>≥ 4 años:</strong> Compensación económica equivalente a 15 días de salario básico por cada año laborado y proporcional. <strong>&lt; 4 años:</strong> No genera compensación económica.</div>';
+      }
+      calculate();
+    }
+
+    /* Toggles */
+    g('toggleSinAsueto').addEventListener('click', () => {
+      const el = g('toggleSinAsueto');
+      el.classList.toggle('on');
+      const off = el.classList.contains('on');
+      g('asuetosSection').style.display = off ? 'none' : 'block';
+      if (off) document.querySelectorAll('input[name="asueto"]').forEach(c => c.checked = false);
+      calculate();
+    });
+
+    g('toggleNoAplica').addEventListener('click', () => {
+      const el = g('toggleNoAplica');
+      el.classList.toggle('on');
+      const off = el.classList.contains('on');
+      g('hextSection').style.display = off ? 'none' : 'block';
+      if (off) {
+        g('hExtDiurnas').value = 0;
+        g('hExtNocturnas').value = 0;
+        g('diasDescanso').value = 0;
+      }
+      calculate();
+    });
+
+    /* ── CÁLCULO PRINCIPAL Y FÓRMULAS EN VIVO ── */
+    function calculate() {
+      const salario = num('salario');
+      const anios = Math.floor(num('anios'));
+      const mesesRaw = Math.min(11, Math.floor(num('meses')));
+      const diasRaw = Math.min(29, Math.floor(num('dias')));
+      const tipo = (document.querySelector('input[name="tipoCierre"]:checked') || {}).value || 'despido_injusto';
+      const preaviso = (document.querySelector('input[name="preaviso"]:checked') || {}).value || 'si';
+
+      const hExtD = num('hExtDiurnas');
+      const hExtN = num('hExtNocturnas');
+      const dDesc = num('diasDescanso');
+      const sinAsueto = g('toggleSinAsueto').classList.contains('on');
+      const sinHExt = g('toggleNoAplica').classList.contains('on');
+      const dAsue = sinAsueto ? 0 : countAsuetos();
+
+      // Días fraccionados comerciales según pág. 14 del Bloque 3: (Meses * 30) + Días
+      const diasFraccTotales = (mesesRaw * 30) + diasRaw;
+      const aniosFraccDec = diasFraccTotales / 360;
+
+      // Valores diarios y por hora
+      const salDiario = salario / 30;
+      const horaOrdDiurna = salDiario / 8;
+      const horaOrdNoct = horaOrdDiurna * 1.25;
+
+      // Actualizar hints de Bloque 1
+      g('salarioHint').textContent = `SBD: ${fmt(salDiario)}/día · SHD: ${fmt(horaOrdDiurna)}/h · SHN: ${fmt(horaOrdNoct)}/h`;
+      g('antiguedadHint').textContent = `Antigüedad computada: ${anios} año${anios !== 1 ? 's' : ''}, ${mesesRaw} mes${mesesRaw !== 1 ? 'es' : ''}, ${diasRaw} día${diasRaw !== 1 ? 's' : ''} (Fracción comercial: (${mesesRaw} × 30) + ${diasRaw} = ${diasFraccTotales} días)`;
+      if (g('asuetoCount')) g('asuetoCount').textContent = `${dAsue} día${dAsue !== 1 ? 's' : ''} de asueto seleccionado${dAsue !== 1 ? 's' : ''}`;
+
+      // FÓRMULA PASO 1 EN VIVO (Cards Dinámicas)
+      g('liveFormulaPaso1').innerHTML = `
+        <div class="subst-card">
+          <span class="subst-title">Salario Básico Diario (SBD)</span>
+          <span class="subst-calc">${fmt(salario)} ÷ 30</span>
+          <span class="subst-res">${fmt(salDiario)}/día</span>
+        </div>
+        <div class="subst-card">
+          <span class="subst-title">Hora Ordinaria Diurna (SHD)</span>
+          <span class="subst-calc">${fmt(salDiario)} ÷ 8</span>
+          <span class="subst-res">${fmt(horaOrdDiurna)}/h</span>
+        </div>
+        <div class="subst-card">
+          <span class="subst-title">Hora Ordinaria Nocturna (SHN)</span>
+          <span class="subst-calc">${fmt(horaOrdDiurna)} × 1.25</span>
+          <span class="subst-res">${fmt(horaOrdNoct)}/h</span>
+        </div>
+        <div class="subst-card">
+          <span class="subst-title">Fracción Comercial (DFT)</span>
+          <span class="subst-calc">(${mesesRaw}m × 30) + ${diasRaw}d</span>
+          <span class="subst-res emerald">${diasFraccTotales} días (${fmtN(aniosFraccDec)}a)</span>
+        </div>
+      `;
+
+      // REGLA DE BLOQUEO: Si es renuncia y no notificó preaviso
+      const isBlocked = (tipo === 'renuncia' && preaviso === 'no');
+      const bannerPreaviso = g('bannerBloqueoPreaviso');
+      const sideBanner = g('sideBannerBloqueo');
+      const btnExport = g('btnExport');
+
+      if (isBlocked) {
+        bannerPreaviso.style.display = 'block';
+        sideBanner.style.display = 'block';
+        btnExport.disabled = true;
+        btnExport.title = 'Trámite bloqueado por omisión de preaviso legal (Art. 401 CT)';
+      } else {
+        bannerPreaviso.style.display = 'none';
+        sideBanner.style.display = 'none';
+        btnExport.disabled = false;
+        btnExport.title = '';
+      }
+
+      /* 1. VACACIONES: Proporcional y Completa Adeudada (Arts. 177, 187, 189 CT) */
+      const estadoVac = (document.querySelector('input[name="estadoVacAnterior"]:checked') || {}).value || 'gozada';
+      let vacCompletaAdeudada = 0;
+      if (estadoVac === 'pendiente' && anios >= 1) {
+        // Art. 189 CT: 15 días con recargo del 30% prima
+        vacCompletaAdeudada = Math.round(15 * salDiario * 1.30 * 100) / 100;
+      }
+
+      let vacProporcional = 0, diasVacProporcionales = 0, diasCorteVac = 0;
+      const fUltVacStr = g('ultimaVacacion').value;
+      const fTermStr = g('fechaTermino').value;
+      if (fUltVacStr && fTermStr && fTermStr >= fUltVacStr) {
+        const { meses: mVac, dias: dVac } = calcAntiguedad(fUltVacStr, fTermStr);
+        diasCorteVac = (mVac * 30) + dVac;
+        diasVacProporcionales = (Math.min(360, diasCorteVac) / 360) * 15;
+        vacProporcional = Math.round(diasVacProporcionales * salDiario * 1.30 * 100) / 100;
+      }
+
+      const vacacionTotal = Math.round((vacProporcional + vacCompletaAdeudada) * 100) / 100;
+
+      if (vacCompletaAdeudada > 0) {
+        g('hintVacaciones').textContent = `Período previo NO pagado (+15d prima) + ${diasCorteVac}d acumulados ➔ ${fmtN(diasVacProporcionales)}d vacación prop.`;
+        g('infoVacResult').style.background = 'rgba(217,119,6,0.1)';
+        g('infoVacResult').style.borderColor = '#d97706';
+        g('infoVacResult').style.color = '#92400e';
+        g('infoVacResult').innerHTML = `
+          <strong>⚠️ Incluye Vacación Completa Vencida No Pagada (Art. 189 CT):</strong><br>
+          • Vacación completa vencida adeudada: 15 días × ${fmt(salDiario)}/d × 1.30 (+30% prima) = <strong>${fmt(vacCompletaAdeudada)}</strong><br>
+          • Vacación proporcional acumulada (${diasCorteVac} días transcurridos): <strong>${fmt(vacProporcional)}</strong><br>
+          • <strong>Total liquidado en concepto de Vacaciones: ${fmt(vacacionTotal)}</strong>
+        `;
+      } else {
+        g('hintVacaciones').textContent = `${diasCorteVac} días transcurridos ➔ ${fmtN(diasVacProporcionales)} días de vacación proporcional + 30% prima`;
+        g('infoVacResult').style.background = 'var(--blue-light)';
+        g('infoVacResult').style.borderColor = 'var(--blue-border)';
+        g('infoVacResult').style.color = 'var(--blue)';
+        g('infoVacResult').innerHTML = `
+          <strong>✅ Vacaciones del período anterior disfrutadas / pagadas:</strong> Solo se liquida la vacación proporcional acumulada: ${fmtN(diasVacProporcionales)} días × ${fmt(salDiario)}/d + 30% prima = <strong>${fmt(vacProporcional)}</strong> (Arts. 177, 187 CT).
+        `;
+      }
+
+      /* 2. AGUINALDO PROPORCIONAL (Arts. 196-200 CT) */
+      const diasBaseAgui = aguinaldoDias(anios);
+      const modoAgui = g('modoAgui') ? g('modoAgui').value : 'reforma_oct';
+      let diasAguiComputados = diasFraccTotales;
+      let descAguiModo = 'Fracción de antigüedad';
+
+      if (modoAgui === 'reforma_oct' || modoAgui === 'tradicional_dic' || modoAgui === 'personalizado') {
+        const fCorteAgui = g('fechaCorteAgui').value;
+        if (fCorteAgui && fTermStr && fTermStr >= fCorteAgui) {
+          const { meses: mAg, dias: dAg } = calcAntiguedad(fCorteAgui, fTermStr);
+          diasAguiComputados = Math.min(360, (mAg * 30) + dAg);
+          descAguiModo = modoAgui === 'reforma_oct'
+            ? `Desde 01-octubre (${mAg}m ${dAg}d = ${diasAguiComputados}d) · Reforma Art. 200 CT`
+            : modoAgui === 'tradicional_dic'
+              ? `Desde 12-diciembre (${mAg}m ${dAg}d = ${diasAguiComputados}d) · Caso Libro UGB`
+              : `Desde ${fCorteAgui} (${mAg}m ${dAg}d = ${diasAguiComputados}d)`;
+        }
+      } else {
+        descAguiModo = `Fracción contractual (${mesesRaw}m ${diasRaw}d = ${diasFraccTotales}d)`;
+      }
+
+      const aguinaldo = Math.round((diasAguiComputados / 360) * (diasBaseAgui * salDiario) * 100) / 100;
+
+      // FÓRMULA PASO 3 EN VIVO (Cards Dinámicas)
+      g('liveFormulaPaso3').innerHTML = `
+        <div class="subst-card">
+          <span class="subst-title">Vacación Proporcional</span>
+          <span class="subst-calc">(${diasCorteVac}d ÷ 360) × 15d × ${fmt(salDiario)} × 1.30</span>
+          <span class="subst-res emerald">${fmt(vacProporcional)}</span>
+        </div>
+        ${vacCompletaAdeudada > 0 ? `
+        <div class="subst-card" style="border-color:#f59e0b; background:rgba(217,119,6,0.06);">
+          <span class="subst-title" style="color:#b45309;">Vacación Vencida Adeudada</span>
+          <span class="subst-calc">15 días × ${fmt(salDiario)}/d × 1.30 (+30% prima)</span>
+          <span class="subst-res amber">${fmt(vacCompletaAdeudada)}</span>
+        </div>
+        <div class="subst-card">
+          <span class="subst-title">Total Vacaciones</span>
+          <span class="subst-calc">${fmt(vacProporcional)} + ${fmt(vacCompletaAdeudada)}</span>
+          <span class="subst-res emerald">${fmt(vacacionTotal)}</span>
+        </div>
+        ` : `
+        <div class="subst-card">
+          <span class="subst-title">Vacación Período Previo</span>
+          <span class="subst-calc">Gozada y pagada en su oportunidad</span>
+          <span class="subst-res" style="color:var(--text-muted);">$0.00 adeudado</span>
+        </div>
+        `}
+        <div class="subst-card">
+          <span class="subst-title">Aguinaldo Proporcional (${diasBaseAgui} días base)</span>
+          <span class="subst-calc">(${diasAguiComputados}d ÷ 360) × (${diasBaseAgui}d × ${fmt(salDiario)})</span>
+          <span class="subst-res emerald">${fmt(aguinaldo)}</span>
+        </div>
+      `;
+
+      /* 3. COMPENSACIÓN / INDEMNIZACIÓN SEGÚN CAUSA */
+      let compensacion = 0, labelComp = '', descComp = '';
+      if (isBlocked) {
+        compensacion = 0;
+        labelComp = 'Compensación BLOQUEADA (Sin preaviso)';
+        descComp = 'Bloqueado por omisión de preaviso formal escrito (Art. 401 CT)';
+        g('liveFormulaPaso2').innerHTML = `
+          <div class="subst-card" style="grid-column: 1 / -1; border-color:#fca5a5; background:rgba(225,29,72,.06);">
+            <span class="subst-title" style="color:#b91c1c;">⛔ BLOQUEO POR FALTA DE PREAVISO</span>
+            <span class="subst-calc" style="color:#b91c1c;">Art. 401 Código de Trabajo · Ley de Renuncia</span>
+            <span class="subst-res" style="color:#b91c1c;">Compensación retenida e inhabilitada ($0.00)</span>
+          </div>`;
+      } else if (tipo === 'despido_injusto') {
+        const indemAnios = anios * salario;
+        const indemFracc = (diasFraccTotales / 360) * salario;
+        compensacion = Math.round((indemAnios + indemFracc) * 100) / 100;
+        labelComp = 'Indemnización por despido injustificado';
+        descComp = `${anios} años ($${fmtN(indemAnios)}) + ${diasFraccTotales}d fracc. ($${fmtN(indemFracc)}) (Art. 58 CT)`;
+        g('liveFormulaPaso2').innerHTML = `
+          <div class="subst-card">
+            <span class="subst-title">Años Completos (${anios})</span>
+            <span class="subst-calc">${anios} × ${fmt(salario)}</span>
+            <span class="subst-res">${fmt(indemAnios)}</span>
+          </div>
+          <div class="subst-card">
+            <span class="subst-title">Fracción Comercial (${diasFraccTotales}d)</span>
+            <span class="subst-calc">(${diasFraccTotales} ÷ 360) × ${fmt(salario)}</span>
+            <span class="subst-res">${fmt(indemFracc)}</span>
+          </div>
+          <div class="subst-card">
+            <span class="subst-title">Total Indemnización (Art. 58)</span>
+            <span class="subst-calc">${fmt(indemAnios)} + ${fmt(indemFracc)}</span>
+            <span class="subst-res emerald">${fmt(compensacion)}</span>
+          </div>
+        `;
+      } else if (tipo === 'despido_justo') {
+        compensacion = 0;
+        labelComp = 'Compensación (despido justificado)';
+        descComp = 'No corresponde indemnización – Art. 50 CT (Causa comprobada)';
+        g('liveFormulaPaso2').innerHTML = `
+          <div class="subst-card" style="grid-column: 1 / -1;">
+            <span class="subst-title">Despido Justificado con Causa Comprobada</span>
+            <span class="subst-calc">Art. 50 Código de Trabajo: Exención de pago patronal</span>
+            <span class="subst-res amber">$0.00 (Exento legalmente)</span>
+          </div>
+        `;
+      } else {
+        // Renuncia con preaviso
+        if (anios >= 4) {
+          const compAnios = anios * 15 * salDiario;
+          const compFracc = (diasFraccTotales / 360) * (15 * salDiario);
+          compensacion = Math.round((compAnios + compFracc) * 100) / 100;
+          labelComp = 'Compensación por renuncia voluntaria (≥4 años)';
+          descComp = `${anios} años ($${fmtN(compAnios)}) + ${diasFraccTotales}d fracc. ($${fmtN(compFracc)}) (15 días/año)`;
+          g('liveFormulaPaso2').innerHTML = `
+            <div class="subst-card">
+              <span class="subst-title">Años Completos (${anios})</span>
+              <span class="subst-calc">${anios} × (15 × ${fmt(salDiario)})</span>
+              <span class="subst-res">${fmt(compAnios)}</span>
+            </div>
+            <div class="subst-card">
+              <span class="subst-title">Fracción (${diasFraccTotales}d)</span>
+              <span class="subst-calc">(${diasFraccTotales} ÷ 360) × (15 × ${fmt(salDiario)})</span>
+              <span class="subst-res">${fmt(compFracc)}</span>
+            </div>
+            <div class="subst-card">
+              <span class="subst-title">Compensación Económica</span>
+              <span class="subst-calc">${fmt(compAnios)} + ${fmt(compFracc)}</span>
+              <span class="subst-res emerald">${fmt(compensacion)}</span>
+            </div>
+          `;
+        } else {
+          compensacion = 0;
+          labelComp = 'Compensación (renuncia <4 años)';
+          descComp = 'Menos de 4 años continuos de servicio -> no corresponde compensación';
+          g('liveFormulaPaso2').innerHTML = `
+            <div class="subst-card" style="grid-column: 1 / -1;">
+              <span class="subst-title">Renuncia con menos de 4 años</span>
+              <span class="subst-calc">Antigüedad (${anios}a) &lt; 4 años continuos (Ley Reguladora de Renuncia)</span>
+              <span class="subst-res amber">$0.00 (No genera compensación)</span>
+            </div>
+          `;
+        }
+      }
+
+      /* 4. ASUETOS LABORADOS (Art. 192 CT) */
+      const subAsue = Math.round(dAsue * salDiario * 2 * 100) / 100;
+      g('liveFormulaPaso4').innerHTML = `
+        <div class="subst-card">
+          <span class="subst-title">Días Laborados</span>
+          <span class="subst-calc">${dAsue} de 15 asuetos oficiales marcados</span>
+          <span class="subst-res">${dAsue} día${dAsue !== 1 ? 's' : ''}</span>
+        </div>
+        <div class="subst-card">
+          <span class="subst-title">Tarifa Doble por Asueto</span>
+          <span class="subst-calc">${fmt(salDiario)} × 2 (Art. 192 CT)</span>
+          <span class="subst-res">${fmt(salDiario * 2)}/día</span>
+        </div>
+        <div class="subst-card">
+          <span class="subst-title">Total Asuetos Laborados</span>
+          <span class="subst-calc">${dAsue} × ${fmt(salDiario * 2)}</span>
+          <span class="subst-res emerald">${fmt(subAsue)}</span>
+        </div>
+      `;
+
+      /* 5. HORAS EXTRAS Y DESCANSOS (NO PAGADOS / ADEUDADOS) */
+      const subHD = sinHExt ? 0 : Math.round(hExtD * (horaOrdDiurna * 2) * 100) / 100;
+      const subHN = sinHExt ? 0 : Math.round(hExtN * (horaOrdNoct * 2) * 100) / 100;
+      const subDesc = sinHExt ? 0 : Math.round(dDesc * salDiario * 2 * 100) / 100;
+
+      g('hintDiurnas').textContent = `Recargo 100%: ${fmt(horaOrdDiurna)} × 2 = ${fmt(horaOrdDiurna * 2)}/h`;
+      g('hintNocturnas').textContent = `Recargo 100% sobre nocturna: ${fmt(horaOrdNoct)} × 2 = ${fmt(horaOrdNoct * 2)}/h`;
+
+      g('liveFormulaPaso5').innerHTML = `
+        <div class="subst-card">
+          <span class="subst-title">Extras Diurnas (${hExtD}h)</span>
+          <span class="subst-calc">${hExtD}h × (${fmt(horaOrdDiurna)} × 2)</span>
+          <span class="subst-res emerald">${fmt(subHD)}</span>
+        </div>
+        <div class="subst-card">
+          <span class="subst-title">Extras Nocturnas (${hExtN}h)</span>
+          <span class="subst-calc">${hExtN}h × (${fmt(horaOrdNoct)} × 2)</span>
+          <span class="subst-res emerald">${fmt(subHN)}</span>
+        </div>
+        <div class="subst-card">
+          <span class="subst-title">7.° Día Descanso (${dDesc}d)</span>
+          <span class="subst-calc">${dDesc}d × (${fmt(salDiario)} × 2)</span>
+          <span class="subst-res emerald">${fmt(subDesc)}</span>
+        </div>
+        <div class="subst-card">
+          <span class="subst-title">Total Extraordinarias</span>
+          <span class="subst-calc">${fmt(subHD)} + ${fmt(subHN)} + ${fmt(subDesc)}</span>
+          <span class="subst-res emerald">${fmt(subHD + subHN + subDesc)}</span>
+        </div>
+      `;
+
+      /* TOTALES Y DEDUCCIONES */
+      const totalBruto = isBlocked ? 0 : (vacacionTotal + aguinaldo + compensacion + subHD + subHN + subAsue + subDesc);
+      const baseGravada = isBlocked ? 0 : (vacacionTotal + subHD + subHN + subAsue + subDesc);
+      const exento = isBlocked ? 0 : (aguinaldo + compensacion);
+
+      const isssBase = Math.min(baseGravada, ISSS_TOPE);
+      const isss = Math.round(isssBase * ISSS_RATE * 100) / 100;
+      const afpBase = Math.min(baseGravada, AFP_TOPE);
+      const afp = Math.round(afpBase * AFP_RATE * 100) / 100;
+      const baseISR = Math.max(0, baseGravada - isss - afp);
+      const isr = calcISR(baseISR);
+      const totalDed = isss + afp + isr;
+      const neto = Math.max(0, Math.round((totalBruto - totalDed) * 100) / 100);
+
+      // Memoria de cálculo de deducciones (Cards Dinámicas)
+      g('liveFormulaDed').innerHTML = `
+        <div class="subst-card">
+          <span class="subst-title">Base Gravada</span>
+          <span class="subst-calc">Exento: ${fmt(exento)}</span>
+          <span class="subst-res">${fmt(baseGravada)}</span>
+        </div>
+        <div class="subst-card">
+          <span class="subst-title">ISSS (3%)</span>
+          <span class="subst-calc">Mín(${fmt(baseGravada)}, $1,000) × 3%</span>
+          <span class="subst-res" style="color:#e11d48;">-${fmt(isss)}</span>
+        </div>
+        <div class="subst-card">
+          <span class="subst-title">AFP (7.25%)</span>
+          <span class="subst-calc">Mín(${fmt(baseGravada)}, $6,523.20) × 7.25%</span>
+          <span class="subst-res" style="color:#e11d48;">-${fmt(afp)}</span>
+        </div>
+        <div class="subst-card">
+          <span class="subst-title">Retención ISR</span>
+          <span class="subst-calc">Gravable: ${fmt(baseISR)}</span>
+          <span class="subst-res" style="color:#e11d48;">-${fmt(isr)}</span>
+        </div>
+      `;
+
+      /* RENDERIZADO EN PANTALLA */
+      g('lblBruto').textContent = fmt(totalBruto);
+      g('lblDedTotal').textContent = `-${fmt(totalDed)}`;
+      g('lblNetoHero').textContent = fmt(neto);
+      g('lblNombreResult').textContent = g('nombreTrabajador').value || '—';
+      g('lblNeto').textContent = fmt(neto);
+
+      if (vacCompletaAdeudada > 0) {
+        g('rowVacCompleta').style.display = 'flex';
+        setRow('lblVacCompleta', 'descVacCompleta', vacCompletaAdeudada, '15 días + 30% prima no pagada (Art. 189 CT)');
+      } else {
+        g('rowVacCompleta').style.display = 'none';
+      }
+      setRow('lblVacacion', 'descVacacion', vacProporcional,
+        diasVacProporcionales > 0 ? `${fmtN(diasVacProporcionales)} días × ${fmt(salDiario)}/d + 30% prima (${diasCorteVac}d comp.)` : 'Sin vacación');
+      setRow('lblAguinaldo', 'descAguinaldo', aguinaldo,
+        diasAguiComputados > 0 ? `${fmtN((diasAguiComputados / 360) * diasBaseAgui)} días × ${fmt(salDiario)}/d (${descAguiModo})` : 'Sin días computados');
+      g('lblCompLabel').textContent = labelComp;
+      setRow('lblComp', 'descComp', compensacion, descComp);
+      setRow('lblHD', 'descHD', subHD, sinHExt ? 'No aplica' : `${hExtD}h × ${fmt(horaOrdDiurna * 2)}/h (No pagadas)`);
+      setRow('lblHN', 'descHN', subHN, sinHExt ? 'No aplica' : `${hExtN}h × ${fmt(horaOrdNoct * 2)}/h (No pagadas)`);
+      setRow('lblAsue', 'descAsue', subAsue, sinAsueto ? 'No aplica' : `${dAsue} día${dAsue !== 1 ? 's' : ''} × ${fmt(salDiario * 2)}/d`);
+      setRow('lblDesc', 'descDesc', subDesc, sinHExt ? 'No aplica' : `${dDesc} días × ${fmt(salDiario * 2)}/d (No pagados)`);
+      setRow('lblIsss', 'descIsss', isss, `Base gravada: ${fmt(isssBase)} × 3% (Regl. ISSS)`, true);
+      setRow('lblAfp', 'descAfp', afp, `Base gravada: ${fmt(afpBase)} × 7.25% (Ley SAP)`, true);
+      setRow('lblIsr', 'descIsr', isr, `Base gravable: ${fmt(baseISR)} | Exento: ${fmt(exento)}`, true);
+
+      // Estado global para exportación en PDF
+      window._state = {
+        nombre: g('nombreTrabajador').value, patrono: g('patrono').value, cargo: g('cargo').value,
+        salario, ingreso: g('fechaIngreso').value, termino: g('fechaTermino').value,
+        anios, mesesRaw, diasRaw, diasFraccTotales, tipo, preaviso, isBlocked,
+        estadoVac, vacCompletaAdeudada, vacProporcional, vacacionTotal,
+        aguinaldo, diasAguiComputados, descAguiModo, compensacion, labelComp,
+        subHD, subHN, subAsue, subDesc, totalBruto, isss, afp, isr, totalDed, neto, baseGravada, exento
+      };
+    }
+
+    function setRow(lId, dId, val, desc, isDed = false) {
+      const el = g(lId);
+      el.textContent = isDed ? `-${fmt(val)}` : fmt(val);
+      el.className = 'ldg-val ' + (val === 0 ? 'v-zero' : isDed ? 'v-rose' : 'v-emerald');
+      g(dId).textContent = desc;
+    }
+
+    /* Convertidor de Número a Letras */
+    function numLetras(n) {
+      const un = ['', 'UNO', 'DOS', 'TRES', 'CUATRO', 'CINCO', 'SEIS', 'SIETE', 'OCHO', 'NUEVE',
+        'DIEZ', 'ONCE', 'DOCE', 'TRECE', 'CATORCE', 'QUINCE', 'DIECISEIS', 'DIECISIETE', 'DIECIOCHO', 'DIECINUEVE'];
+      const de = ['', '', 'VEINTE', 'TREINTA', 'CUARENTA', 'CINCUENTA', 'SESENTA', 'SETENTA', 'OCHENTA', 'NOVENTA'];
+      const ce = ['', 'CIEN', 'DOSCIENTOS', 'TRESCIENTOS', 'CUATROCIENTOS', 'QUINIENTOS',
+        'SEISCIENTOS', 'SETECIENTOS', 'OCHOCIENTOS', 'NOVECIENTOS'];
+      function t(x) {
+        if (!x) return '';
+        if (x < 20) return un[x];
+        if (x < 100) { const d = Math.floor(x / 10), u = x % 10; return de[d] + (u ? ' Y ' + un[u] : ''); }
+        if (x === 100) return 'CIEN';
+        const c = Math.floor(x / 100), r = x % 100;
+        return ce[c] + (r ? ' ' + t(r) : '');
+      }
+      const ent = Math.floor(n), cts = Math.round((n - ent) * 100);
+      let s = ent >= 1000 ? (() => {
+        const m = Math.floor(ent / 1000), r = ent % 1000;
+        return (m === 1 ? 'MIL' : t(m) + ' MIL') + (r ? ' ' + t(r) : '');
+      })() : t(ent) || 'CERO';
+      return s + ' ' + String(cts).padStart(2, '0') + '/100 DÓLARES DE LOS ESTADOS UNIDOS DE AMÉRICA';
+    }
+
+    /* Impresión y Exportación de Comprobante */
+    function printComprobante() {
+      const s = window._state;
+      if (!s) { alert('Realiza el cálculo primero.'); return; }
+      if (s.isBlocked) {
+        alert('⛔ TRÁMITE BLOQUEADO: El trabajador omitió el preaviso formal por escrito (Art. 401 CT). No es legalmente posible emitir el comprobante de pago.');
+        return;
+      }
+      const fh = new Date().toLocaleDateString('es-SV', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      g('pNombre').textContent = s.nombre || '—';
+      g('pPatrono').textContent = s.patrono || '—';
+      g('pCargo').textContent = s.cargo || '—';
+      g('pSalario').textContent = fmt(s.salario);
+      g('pIngreso').textContent = s.ingreso || '—';
+      g('pTermino').textContent = s.termino || '—';
+      g('pAntigüedad').textContent = `${s.anios} años, ${s.mesesRaw} meses, ${s.diasRaw} días (Fracción comercial: ${s.diasFraccTotales} días)`;
+
+      const cm = {
+        despido_injusto: 'Despido sin causa justificada (Art. 58 CT)',
+        despido_justo: 'Despido con justa causa comprobada (Art. 50 CT)',
+        renuncia: 'Renuncia voluntaria formal con preaviso (Ley Reguladora)'
+      };
+      g('pCausa').textContent = cm[s.tipo] || s.tipo;
+
+      const rows = [
+        ...(s.vacCompletaAdeudada > 0 ? [{ c: 'Vacación completa vencida no pagada (15 días + 30% prima)', l: 'Art. 189 CT', v: s.vacCompletaAdeudada }] : []),
+        { c: 'Vacación proporcional (+30% prima)', l: 'Arts. 177 y 187 CT', v: s.vacProporcional },
+        { c: `Aguinaldo proporcional (${s.descAguiModo || 'Arts. 196-198 CT'})`, l: 'Arts. 196-200 CT (Reforma)', v: s.aguinaldo },
+        { c: s.labelComp, l: 'Art. 58 CT', v: s.compensacion },
+        { c: 'Horas extras diurnas no pagadas', l: 'Art. 169 CT', v: s.subHD },
+        { c: 'Horas extras nocturnas no pagadas', l: 'Arts. 168 y 169 CT', v: s.subHN },
+        { c: 'Días de asueto nacional laborados', l: 'Art. 192 CT', v: s.subAsue },
+        { c: 'Días de descanso semanal laborados', l: 'Arts. 175 y 176 CT', v: s.subDesc }
+      ].filter(r => r.v > 0);
+
+      g('pDesglose').innerHTML = rows.map(r => `<tr><td>${r.c}</td><td>${r.l}</td><td class="right">${fmt(r.v)}</td></tr>`).join('');
+      g('pBrutoTotal').textContent = fmt(s.totalBruto);
+      g('pDeduccionesNota').textContent = `Remuneración gravada sujeta a cotización: ${fmt(s.baseGravada)}. Ingresos exentos de ley: ${fmt(s.exento)} (Indemnización y Aguinaldo).`;
+
+      const deds = [
+        { c: 'Cotización ISSS régimen salud (trabajador 3%)', l: 'Regl. ISSS, Art. 29', v: s.isss },
+        { c: 'Cotización AFP fondo previsional (trabajador 7.25%)', l: 'Ley SAP', v: s.afp },
+        { c: 'Retención de Impuesto sobre la Renta (ISR)', l: 'Art. 37 Ley de ISR', v: s.isr }
+      ];
+      g('pDeducciones').innerHTML = deds.map(r => `<tr><td>${r.c}</td><td>${r.l}</td><td class="right">-${fmt(r.v)}</td></tr>`).join('');
+      g('pNetoTotal').textContent = fmt(s.neto);
+      g('pNetoLetras').textContent = numLetras(s.neto);
+      g('pDeclaracion').textContent = `La persona trabajadora ${s.nombre || '—'} declara haber revisado el desglose detallado de sus prestaciones sociales de conformidad con el Código de Trabajo de El Salvador y las leyes conexas, recibiendo a entera satisfacción las sumas correspondientes y el detalle de retenciones legales aplicadas.`;
+      g('pFooter').textContent = `Generado el ${fh} · Calculadora de Prestaciones Laborales · LAB 2 DEE UGB 2026`;
+
+      window.print();
+    }
+
+    /* ── CASOS DE PRUEBA ── */
+    function loadCase(n) {
+      g('toggleSinAsueto').classList.remove('on');
+      g('asuetosSection').style.display = 'block';
+      g('toggleNoAplica').classList.remove('on');
+      g('hextSection').style.display = 'block';
+      document.querySelectorAll('input[name="asueto"]').forEach(c => c.checked = false);
+
+      const c = {
+        1: { nom: 'Carlos Alberto Cruz', pat: 'Retail SV S.A. de C.V.', car: 'Auxiliar de Tienda', sal: 600, ing: '2019-04-01', ter: '2026-09-28', uvac: '2025-04-01', tipo: 'despido_injusto', pre: 'si', hd: 10, hn: 5, dd: 1, asue: ['asv11', 'asv14', 'asv15'], modoAgui: 'reforma_oct', fAgui: '2025-10-01', vacPendiente: 'gozada' },
+        2: { nom: 'Marta Elena Rivas', pat: 'Servicios Logísticos SV S.A.', car: 'Cajera', sal: 500, ing: '2022-01-10', ter: '2026-09-28', uvac: '2025-01-10', tipo: 'despido_justo', pre: 'si', hd: 0, hn: 0, dd: 0, asue: [], modoAgui: 'reforma_oct', fAgui: '2025-10-01', vacPendiente: 'gozada' },
+        3: { nom: 'José Roberto Ventura', pat: 'Industrias Norte S.A.', car: 'Operario de Planta', sal: 800, ing: '2024-01-15', ter: '2026-09-28', uvac: '2024-01-15', tipo: 'renuncia', pre: 'si', hd: 0, hn: 0, dd: 0, asue: [], modoAgui: 'reforma_oct', fAgui: '2025-10-01', vacPendiente: 'gozada' },
+        4: { nom: 'Ana Cecilia Vásquez', pat: 'Corporación Comercial ABC S.A.', car: 'Coordinadora de Operaciones', sal: 950, ing: '2021-06-01', ter: '2026-09-28', uvac: '2025-06-01', tipo: 'renuncia', pre: 'si', hd: 0, hn: 0, dd: 0, asue: [], modoAgui: 'reforma_oct', fAgui: '2025-10-01', vacPendiente: 'gozada' },
+        5: { nom: 'Roberto Alfredo Aguilar Bonilla', pat: 'Orion Software S.A. de C.V.', car: 'Ingeniero de Software Senior', sal: 4000, ing: '2006-01-01', ter: '2026-08-12', uvac: '2025-08-12', tipo: 'despido_injusto', pre: 'si', hd: 6, hn: 3, dd: 1.5, asue: ['asv10'], modoAgui: 'reforma_oct', fAgui: '2025-10-01', vacPendiente: 'gozada' },
+        6: { nom: 'Trabajador Caso Captura', pat: 'Distribuidora Central S.A.', car: 'Ejecutivo de Ventas', sal: 700, ing: '2024-03-13', ter: '2026-09-28', uvac: '2025-09-28', tipo: 'despido_injusto', pre: 'si', hd: 0, hn: 0, dd: 0, asue: ['asv14'], modoAgui: 'reforma_oct', fAgui: '2025-10-01', vacPendiente: 'gozada' },
+        7: { nom: 'Roberto Herrera (Libro UGB Bloque 3)', pat: 'Empresa Modelo UGB S.A.', car: 'Auxiliar Contable', sal: 600, ing: '2015-01-01', ter: '2021-09-30', uvac: '2021-04-15', tipo: 'despido_injusto', pre: 'si', hd: 0, hn: 0, dd: 0, asue: [], modoAgui: 'tradicional_dic', fAgui: '2020-12-12', vacPendiente: 'gozada' },
+        8: { nom: 'Guillermo Antonio Peña', pat: 'Comercial del Oriente S.A. de C.V.', car: 'Supervisor de Operaciones', sal: 650, ing: '2020-02-01', ter: '2026-09-28', uvac: '2025-02-01', tipo: 'despido_injusto', pre: 'si', hd: 8, hn: 4, dd: 1, asue: ['asv14'], modoAgui: 'reforma_oct', fAgui: '2025-10-01', vacPendiente: 'pendiente' }
+      }[n];
+      if (!c) return;
+
+      g('nombreTrabajador').value = c.nom;
+      g('patrono').value = c.pat;
+      g('cargo').value = c.car;
+      g('salario').value = c.sal;
+      g('fechaIngreso').value = c.ing;
+      g('fechaTermino').value = c.ter;
+      g('ultimaVacacion').value = c.uvac;
+
+      document.querySelector(`input[name="tipoCierre"][value="${c.tipo}"]`).checked = true;
+      const preEl = document.querySelector(`input[name="preaviso"][value="${c.pre}"]`);
+      if (preEl) preEl.checked = true;
+
+      const vacEl = document.querySelector(`input[name="estadoVacAnterior"][value="${c.vacPendiente || 'gozada'}"]`);
+      if (vacEl) vacEl.checked = true;
+
+      if (g('modoAgui') && c.modoAgui) {
+        g('modoAgui').value = c.modoAgui;
+        onModoAguiChange(true);
+        if (c.fAgui && g('fechaCorteAgui')) g('fechaCorteAgui').value = c.fAgui;
+      }
+
+      g('hExtDiurnas').value = c.hd;
+      g('hExtNocturnas').value = c.hn;
+      g('diasDescanso').value = c.dd;
+
+      c.asue.forEach(id => {
+        const el = g(id);
+        if (el) el.checked = true;
+      });
+
+      // Si está en modo manual, regresar a automático para que las fechas sincronicen
+      if (isManualAntiguedad) toggleManualAntiguedad();
+      syncFechasAntiguedad();
+      updateCierreUI();
+    }
+
+    function resetAll() {
+      g('calcForm').reset();
+      g('toggleSinAsueto').classList.remove('on');
+      g('asuetosSection').style.display = 'block';
+      g('toggleNoAplica').classList.remove('on');
+      g('hextSection').style.display = 'block';
+      document.querySelectorAll('input[name="asueto"]').forEach(c => c.checked = false);
+      const vGoz = g('vGozada');
+      if (vGoz) vGoz.checked = true;
+      if (g('modoAgui')) {
+        g('modoAgui').value = 'reforma_oct';
+        onModoAguiChange();
+      }
+      if (isManualAntiguedad) toggleManualAntiguedad();
+      syncFechasAntiguedad();
+      updateCierreUI();
+    }
+
+    /* Dark Mode Toggle */
+    g('themeToggle').addEventListener('click', () => {
+      const d = document.documentElement.getAttribute('data-theme') === 'dark';
+      if (d) {
+        document.documentElement.removeAttribute('data-theme');
+        g('themeToggle').textContent = '🌙 Modo Oscuro';
+      } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        g('themeToggle').textContent = '☀️ Modo Claro';
+      }
+    });
+
+    /* Inicialización de página */
+    document.addEventListener('DOMContentLoaded', () => {
+      syncFechasAntiguedad();
+      onModoAguiChange(true);
+      updateCierreUI();
+    });
+  </script>
+</body>
+
+</html>
