@@ -1399,7 +1399,21 @@
                   <div class="fg">
                     <label for="salario">Salario Mensual (USD):</label>
                     <input id="salario" type="number" step="0.01" min="0" value="700.00" oninput="calculate()">
-                    <span class="hint" id="salarioHint">SBD: $23.33/día · Mínimo: $365.00</span>
+                    <span class="hint" id="salarioHint">SBD: $23.33/día · Salario mínimo de referencia: $408.80</span>
+                  </div>
+                  <div class="fg">
+                    <label for="sectorLaboral">Sector económico:</label>
+                    <select id="sectorLaboral" onchange="onSectorLaboralChange()">
+                      <option value="comercio">Comercio, servicios e industria</option>
+                      <option value="maquila">Maquila textil y confección</option>
+                      <option value="agropecuario">Agricultura, ganadería, silvicultura y pesca</option>
+                      <option value="otro">Otro sector</option>
+                    </select>
+                  </div>
+                  <div class="fg">
+                    <label for="salarioMinimoSector">Salario mínimo mensual del sector:</label>
+                    <input id="salarioMinimoSector" type="number" step="0.01" min="0" value="408.80" oninput="calculate()" onchange="updateCierreUI()">
+                    <span class="hint">Base para calcular 4 salarios mínimos por año</span>
                   </div>
                   <div class="fg">
                     <label for="anios">Años Laborados:</label>
@@ -1568,7 +1582,7 @@
                   <span class="math-op">=</span>
                   <span>(</span><span class="math-chip time">Años</span>
                   <span class="math-op">×</span>
-                  <span class="math-chip sbm">SBM</span><span>)</span>
+                  <span>4 × $408.80</span><span>)</span>
                   <span class="math-op">+</span>
                   <span>[</span>
                   <span class="math-fraction">
@@ -1576,8 +1590,12 @@
                     <span class="den">360</span>
                   </span>
                   <span class="math-op">×</span>
-                  <span class="math-chip sbm">SBM</span>
+                  <span>4 × $408.80</span>
                   <span>]</span>
+                </div>
+                <div class="math-row" style="font-size:0.72rem; color:var(--text-muted);">
+                  <span class="math-label">Indemnización fija</span>
+                  <span>Con 2 años completos o más: 4 × salario mínimo mensual del sector, una sola vez.</span>
                 </div>
 
                 <div class="math-row">
@@ -1635,22 +1653,9 @@
               </div>
             </div>
             <div class="form-grid">
-              <!-- APARTADO DE VACACIONES: Estado de goce / pago -->
               <div class="fg span2" style="background:var(--bg-subtle); padding:12px; border-radius:8px; border:1px solid var(--border);">
-                <label style="font-weight:700;">¿El trabajador ya había gozado sus vacaciones del año anterior o no se las habían pagado?</label>
-                <div class="radio-group" style="margin-top:6px;">
-                  <label class="radio-pill">
-                    <input type="radio" name="estadoVacAnterior" value="gozada" checked id="vGozada" onchange="calculate()">
-                    <span class="rdot"></span>
-                    Ya las había gozado / pagadas (Solo liquidar vacación proporcional actual)
-                  </label>
-                  <label class="radio-pill" style="border-color:#f59e0b;">
-                    <input type="radio" name="estadoVacAnterior" value="pendiente" id="vPendiente" onchange="calculate()">
-                    <span class="rdot" style="background:#d97706;"></span>
-                    <strong style="color:#b45309;">No se las habían pagado / Adeudadas (+15 días con 30% prima completa)</strong>
-                  </label>
-                </div>
-                <span class="hint" style="margin-top:6px;">Arts. 177, 187 y 189 CT: Si cumplió el año de servicio y no disfrutó ni le fueron pagadas sus vacaciones, el patrono debe cancelar la vacación completa vencida (15 días + 30% prima = SBD × 15 × 1.30) más la vacación proporcional acumulada.</span>
+                <strong style="font-size:.82rem;">Vacaciones no gozadas desde la fecha indicada</strong>
+                <span class="hint">Se liquidan 15 días más 30% de prima por cada ciclo comercial completo de 360 días, y la parte proporcional del ciclo actual (Arts. 177, 187 y 189 CT).</span>
               </div>
 
               <div class="fg span2">
@@ -1658,6 +1663,21 @@
                     style="font-weight:400;color:var(--text-muted);">(o fecha de ingreso si nunca gozó vacaciones)</em></label>
                 <input id="ultimaVacacion" type="date" value="2025-04-01" onchange="onUltimaVacacionChange()">
                 <span class="hint" id="hintVacaciones">Se computa desde esta fecha de corte hasta la fecha de terminación laboral.</span>
+              </div>
+              <div class="fg span2">
+                <label style="font-weight:700;">¿Ya te pagaron los ciclos completos de vacaciones desde esa fecha?</label>
+                <div class="radio-group">
+                  <label class="radio-pill">
+                    <input type="radio" name="ciclosVacPagados" value="si" onchange="calculate()">
+                    <span class="rdot"></span>
+                    Sí, liquida solo la proporción del ciclo actual
+                  </label>
+                  <label class="radio-pill">
+                    <input type="radio" name="ciclosVacPagados" value="no" checked onchange="calculate()">
+                    <span class="rdot"></span>
+                    No, incluye los ciclos completos pendientes
+                  </label>
+                </div>
               </div>
 
               <!-- APARTADO DE AGUINALDO: A partir del 01 de octubre / Reforma Legal -->
@@ -1717,7 +1737,7 @@
                 </div>
 
                 <div class="math-row" style="background:rgba(217,119,6,.05); border-color:rgba(217,119,6,.2);">
-                  <span class="math-label" style="color:#b45309;">Vacación Vencida No Pagada</span>
+                  <span class="math-label" style="color:#b45309;">Ciclos Completos No Gozados</span>
                   <span class="math-chip res">Vac. Adeudada</span>
                   <span class="math-op">=</span>
                   <span>15 días base</span>
@@ -1983,7 +2003,7 @@
           <div class="ledger">
             <div class="ldg-gtitle">Prestaciones proporcionales y adeudadas</div>
             <div class="ldg-row" id="rowVacCompleta">
-              <div class="ldg-lbl">Vacación completa no pagada<small id="descVacCompleta">15 días + 30% prima (Art. 189 CT)</small></div>
+              <div class="ldg-lbl">Vacaciones completas no gozadas<small id="descVacCompleta">15 días por ciclo + 30% prima (Art. 189 CT)</small></div>
               <div class="ldg-val v-emerald" id="lblVacCompleta">$0.00</div>
             </div>
             <div class="ldg-row">
@@ -2205,6 +2225,11 @@
     const num = id => Math.max(0, parseFloat(g(id).value) || 0);
 
     /* Constantes de Ley */
+    const SALARIOS_MINIMOS_POR_SECTOR = {
+      comercio: 408.80,
+      maquila: 402.32,
+      agropecuario: 272.72
+    };
     const ISSS_RATE = 0.03, ISSS_TOPE = 1000;
     const AFP_RATE = 0.0725, AFP_TOPE = 6523.20;
     const ISR_TABLA = [
@@ -2217,6 +2242,13 @@
       const t = ISR_TABLA.find(x => b >= x.desde && b <= x.hasta);
       return (!t || !t.tasa) ? 0 : Math.round((t.cuota + (b - t.sobre) * t.tasa) * 100) / 100;
     }
+    function onSectorLaboralChange() {
+      const salarioMinimo = SALARIOS_MINIMOS_POR_SECTOR[g('sectorLaboral').value];
+      if (salarioMinimo !== undefined) g('salarioMinimoSector').value = salarioMinimo.toFixed(2);
+      else g('salarioMinimoSector').value = '';
+      updateCierreUI();
+    }
+
     function aguinaldoDias(a) {
       return a < 3 ? 15 : a <= 10 ? 19 : 21;
     }
@@ -2460,7 +2492,15 @@
       g('sectionPreaviso').style.display = tipo === 'renuncia' ? 'block' : 'none';
 
       if (tipo === 'despido_injusto') {
-        box.innerHTML = '<div style="padding:11px 14px;border-radius:8px;background:var(--blue-light);border-left:3px solid var(--blue);font-size:.8rem;color:var(--blue);"><strong style="display:block;margin-bottom:4px;">📐 Indemnización por despido injustificado (Art. 58 CT)</strong>Años completos × SBM + Fracción comercial [(meses×30)+días] ÷ 360 × SBM.</div>';
+        const salarioMinimoSector = num('salarioMinimoSector');
+        const indemnizacionTotal = salarioMinimoSector * 4;
+        const antiguedadCumpleMinimo = Math.floor(num('anios')) >= 2;
+        const mensajeIndemnizacion = !antiguedadCumpleMinimo
+          ? 'Requiere al menos 2 años completos de servicio.'
+          : salarioMinimoSector <= 0
+            ? 'Ingresa el salario mínimo mensual correspondiente al sector seleccionado.'
+            : `Aplica un pago único de ${fmt(indemnizacionTotal)} según el sector seleccionado.`;
+        box.innerHTML = `<div style="padding:11px 14px;border-radius:8px;background:var(--blue-light);border-left:3px solid var(--blue);font-size:.8rem;color:var(--blue);"><strong style="display:block;margin-bottom:4px;">📐 Indemnización por despido injustificado (Art. 58 CT)</strong>${mensajeIndemnizacion}</div>`;
       } else if (tipo === 'despido_justo') {
         box.innerHTML = '<div style="padding:11px 14px;border-radius:8px;background:rgba(225,29,72,.07);border-left:3px solid #e11d48;font-size:.8rem;color:#e11d48;"><strong style="display:block;margin-bottom:4px;">⚠️ Despido justificado (Art. 50 CT)</strong>El patrono NO paga indemnización cuando existe causa legal debidamente comprobada. Solo se liquidan prestaciones proporcionales y horas adeudadas.</div>';
       } else {
@@ -2495,6 +2535,10 @@
     /* ── CÁLCULO PRINCIPAL Y FÓRMULAS EN VIVO ── */
     function calculate() {
       const salario = num('salario');
+      const sectorLaboral = g('sectorLaboral').value;
+      const sectorLaboralNombre = g('sectorLaboral').selectedOptions[0].textContent;
+      const salarioMinimoSector = num('salarioMinimoSector');
+      const indemnizacionTotal = salarioMinimoSector * 4;
       const anios = Math.floor(num('anios'));
       const mesesRaw = Math.min(11, Math.floor(num('meses')));
       const diasRaw = Math.min(29, Math.floor(num('dias')));
@@ -2518,7 +2562,7 @@
       const horaOrdNoct = horaOrdDiurna * 1.25;
 
       // Actualizar hints de Bloque 1
-      g('salarioHint').textContent = `SBD: ${fmt(salDiario)}/día · SHD: ${fmt(horaOrdDiurna)}/h · SHN: ${fmt(horaOrdNoct)}/h`;
+      g('salarioHint').textContent = `SBD: ${fmt(salDiario)}/día · SHD: ${fmt(horaOrdDiurna)}/h · SHN: ${fmt(horaOrdNoct)}/h · Mínimo sectorial: ${fmt(salarioMinimoSector)}`;
       g('antiguedadHint').textContent = `Antigüedad computada: ${anios} año${anios !== 1 ? 's' : ''}, ${mesesRaw} mes${mesesRaw !== 1 ? 'es' : ''}, ${diasRaw} día${diasRaw !== 1 ? 's' : ''} (Fracción comercial: (${mesesRaw} × 30) + ${diasRaw} = ${diasFraccTotales} días)`;
       if (g('asuetoCount')) g('asuetoCount').textContent = `${dAsue} día${dAsue !== 1 ? 's' : ''} de asueto seleccionado${dAsue !== 1 ? 's' : ''}`;
 
@@ -2564,46 +2608,37 @@
         btnExport.title = '';
       }
 
-      /* 1. VACACIONES: Proporcional y Completa Adeudada (Arts. 177, 187, 189 CT) */
-      const estadoVac = (document.querySelector('input[name="estadoVacAnterior"]:checked') || {}).value || 'gozada';
-      let vacCompletaAdeudada = 0;
-      if (estadoVac === 'pendiente' && anios >= 1) {
-        // Art. 189 CT: 15 días con recargo del 30% prima
-        vacCompletaAdeudada = Math.round(15 * salDiario * 1.30 * 100) / 100;
-      }
-
-      let vacProporcional = 0, diasVacProporcionales = 0, diasCorteVac = 0;
+      /* 1. VACACIONES: ciclos completos y fracción desde la última vacación */
+      let vacCompletaAdeudada = 0, vacProporcional = 0;
+      let diasVacProporcionales = 0, diasCorteVac = 0, diasRestoVacacion = 0;
+      let periodosVacCompletos = 0;
+      const ciclosVacPagados = (document.querySelector('input[name="ciclosVacPagados"]:checked') || {}).value === 'si';
+      let periodosVacPendientes = 0;
       const fUltVacStr = g('ultimaVacacion').value;
       const fTermStr = g('fechaTermino').value;
       if (fUltVacStr && fTermStr && fTermStr >= fUltVacStr) {
-        const { meses: mVac, dias: dVac } = calcAntiguedad(fUltVacStr, fTermStr);
-        diasCorteVac = (mVac * 30) + dVac;
-        diasVacProporcionales = (Math.min(360, diasCorteVac) / 360) * 15;
+        const antiguedadVac = calcAntiguedad(fUltVacStr, fTermStr);
+        diasCorteVac = (antiguedadVac.anios * 360) + (antiguedadVac.meses * 30) + antiguedadVac.dias;
+        periodosVacCompletos = Math.floor(diasCorteVac / 360);
+        diasRestoVacacion = diasCorteVac % 360;
+        periodosVacPendientes = ciclosVacPagados ? 0 : periodosVacCompletos;
+        diasVacProporcionales = (diasRestoVacacion / 360) * 15;
+        vacCompletaAdeudada = Math.round(periodosVacPendientes * 15 * salDiario * 1.30 * 100) / 100;
         vacProporcional = Math.round(diasVacProporcionales * salDiario * 1.30 * 100) / 100;
       }
 
       const vacacionTotal = Math.round((vacProporcional + vacCompletaAdeudada) * 100) / 100;
 
-      if (vacCompletaAdeudada > 0) {
-        g('hintVacaciones').textContent = `Período previo NO pagado (+15d prima) + ${diasCorteVac}d acumulados ➔ ${fmtN(diasVacProporcionales)}d vacación prop.`;
-        g('infoVacResult').style.background = 'rgba(217,119,6,0.1)';
-        g('infoVacResult').style.borderColor = '#d97706';
-        g('infoVacResult').style.color = '#92400e';
-        g('infoVacResult').innerHTML = `
-          <strong>⚠️ Incluye Vacación Completa Vencida No Pagada (Art. 189 CT):</strong><br>
-          • Vacación completa vencida adeudada: 15 días × ${fmt(salDiario)}/d × 1.30 (+30% prima) = <strong>${fmt(vacCompletaAdeudada)}</strong><br>
-          • Vacación proporcional acumulada (${diasCorteVac} días transcurridos): <strong>${fmt(vacProporcional)}</strong><br>
-          • <strong>Total liquidado en concepto de Vacaciones: ${fmt(vacacionTotal)}</strong>
-        `;
-      } else {
-        g('hintVacaciones').textContent = `${diasCorteVac} días transcurridos ➔ ${fmtN(diasVacProporcionales)} días de vacación proporcional + 30% prima`;
-        g('infoVacResult').style.background = 'var(--blue-light)';
-        g('infoVacResult').style.borderColor = 'var(--blue-border)';
-        g('infoVacResult').style.color = 'var(--blue)';
-        g('infoVacResult').innerHTML = `
-          <strong>✅ Vacaciones del período anterior disfrutadas / pagadas:</strong> Solo se liquida la vacación proporcional acumulada: ${fmtN(diasVacProporcionales)} días × ${fmt(salDiario)}/d + 30% prima = <strong>${fmt(vacProporcional)}</strong> (Arts. 177, 187 CT).
-        `;
-      }
+      g('hintVacaciones').textContent = `${diasCorteVac} días comerciales: ${periodosVacCompletos} ciclos completos (${periodosVacPendientes} pendientes) + ${diasRestoVacacion} días proporcionales.`;
+      g('infoVacResult').style.background = 'var(--blue-light)';
+      g('infoVacResult').style.borderColor = 'var(--blue-border)';
+      g('infoVacResult').style.color = 'var(--blue)';
+      g('infoVacResult').innerHTML = `
+        <strong>Vacaciones acumuladas desde ${fUltVacStr || 'la fecha indicada'} hasta ${fTermStr || 'hoy'}:</strong><br>
+        • ${periodosVacPendientes} ciclos completos pendientes × 15 días + 30% prima: <strong>${fmt(vacCompletaAdeudada)}</strong><br>
+        • ${fmtN(diasVacProporcionales)} días proporcionales (${diasRestoVacacion} de 360) + 30% prima: <strong>${fmt(vacProporcional)}</strong><br>
+        • <strong>Total de vacaciones no gozadas: ${fmt(vacacionTotal)}</strong>
+      `;
 
       /* 2. AGUINALDO PROPORCIONAL (Arts. 196-200 CT) */
       const diasBaseAgui = aguinaldoDias(anios);
@@ -2632,13 +2667,13 @@
       g('liveFormulaPaso3').innerHTML = `
         <div class="subst-card">
           <span class="subst-title">Vacación Proporcional</span>
-          <span class="subst-calc">(${diasCorteVac}d ÷ 360) × 15d × ${fmt(salDiario)} × 1.30</span>
+          <span class="subst-calc">(${diasRestoVacacion}d ÷ 360) × 15d × ${fmt(salDiario)} × 1.30</span>
           <span class="subst-res emerald">${fmt(vacProporcional)}</span>
         </div>
         ${vacCompletaAdeudada > 0 ? `
         <div class="subst-card" style="border-color:#f59e0b; background:rgba(217,119,6,0.06);">
-          <span class="subst-title" style="color:#b45309;">Vacación Vencida Adeudada</span>
-          <span class="subst-calc">15 días × ${fmt(salDiario)}/d × 1.30 (+30% prima)</span>
+          <span class="subst-title" style="color:#b45309;">${periodosVacPendientes} Ciclos Completos Pendientes</span>
+          <span class="subst-calc">${periodosVacPendientes} × 15 días × ${fmt(salDiario)}/d × 1.30</span>
           <span class="subst-res amber">${fmt(vacCompletaAdeudada)}</span>
         </div>
         <div class="subst-card">
@@ -2648,9 +2683,9 @@
         </div>
         ` : `
         <div class="subst-card">
-          <span class="subst-title">Vacación Período Previo</span>
-          <span class="subst-calc">Gozada y pagada en su oportunidad</span>
-          <span class="subst-res" style="color:var(--text-muted);">$0.00 adeudado</span>
+          <span class="subst-title">Ciclos Completos No Gozados</span>
+          <span class="subst-calc">${periodosVacPendientes} ciclos completos pendientes</span>
+          <span class="subst-res" style="color:var(--text-muted);">$0.00</span>
         </div>
         `}
         <div class="subst-card">
@@ -2673,28 +2708,35 @@
             <span class="subst-res" style="color:#b91c1c;">Compensación retenida e inhabilitada ($0.00)</span>
           </div>`;
       } else if (tipo === 'despido_injusto') {
-        const indemAnios = anios * salario;
-        const indemFracc = (diasFraccTotales / 360) * salario;
-        compensacion = Math.round((indemAnios + indemFracc) * 100) / 100;
         labelComp = 'Indemnización por despido injustificado';
-        descComp = `${anios} años ($${fmtN(indemAnios)}) + ${diasFraccTotales}d fracc. ($${fmtN(indemFracc)}) (Art. 58 CT)`;
-        g('liveFormulaPaso2').innerHTML = `
+        if (anios >= 2 && salarioMinimoSector > 0) {
+          compensacion = Math.round(indemnizacionTotal * 100) / 100;
+          descComp = `Pago único de 4 salarios mínimos: ${fmt(salarioMinimoSector)} × 4 (${sectorLaboralNombre}) (Art. 58 CT)`;
+          g('liveFormulaPaso2').innerHTML = `
           <div class="subst-card">
-            <span class="subst-title">Años Completos (${anios})</span>
-            <span class="subst-calc">${anios} × ${fmt(salario)}</span>
-            <span class="subst-res">${fmt(indemAnios)}</span>
+            <span class="subst-title">Sector y Salario Mínimo</span>
+            <span class="subst-calc">4 × ${fmt(salarioMinimoSector)} · Requisito: 2 años completos</span>
+            <span class="subst-res">${fmt(indemnizacionTotal)}</span>
           </div>
           <div class="subst-card">
-            <span class="subst-title">Fracción Comercial (${diasFraccTotales}d)</span>
-            <span class="subst-calc">(${diasFraccTotales} ÷ 360) × ${fmt(salario)}</span>
-            <span class="subst-res">${fmt(indemFracc)}</span>
-          </div>
-          <div class="subst-card">
-            <span class="subst-title">Total Indemnización (Art. 58)</span>
-            <span class="subst-calc">${fmt(indemAnios)} + ${fmt(indemFracc)}</span>
+            <span class="subst-title">Pago Único de Indemnización (Art. 58)</span>
+            <span class="subst-calc">4 salarios mínimos · ${sectorLaboralNombre}</span>
             <span class="subst-res emerald">${fmt(compensacion)}</span>
           </div>
         `;
+        } else {
+          compensacion = 0;
+          descComp = anios < 2
+            ? 'No aplica: se requieren al menos 2 años completos de servicio.'
+            : 'No calculada: ingresa el salario mínimo mensual del sector.';
+          g('liveFormulaPaso2').innerHTML = `
+            <div class="subst-card" style="grid-column: 1 / -1;">
+              <span class="subst-title">${anios < 2 ? 'Requisito mínimo no cumplido' : 'Falta la tarifa del sector'}</span>
+              <span class="subst-calc">${anios < 2 ? `Antigüedad actual: ${anios} años completos. Se requieren 2.` : 'Ingresa el salario mínimo mensual correspondiente.'}</span>
+              <span class="subst-res amber">$0.00 de indemnización</span>
+            </div>
+          `;
+        }
       } else if (tipo === 'despido_justo') {
         compensacion = 0;
         labelComp = 'Compensación (despido justificado)';
@@ -2848,7 +2890,7 @@
       g('lblNeto').textContent = fmt(neto);
 
       setRow('lblVacCompleta', 'descVacCompleta', vacCompletaAdeudada,
-        vacCompletaAdeudada > 0 ? '15 días + 30% prima no pagada (Art. 189 CT)' : 'No adeudada');
+        `${periodosVacPendientes} ciclos pendientes × 15 días + 30% prima (Art. 189 CT)`);
       setRow('lblVacacion', 'descVacacion', vacProporcional,
         diasVacProporcionales > 0 ? `${fmtN(diasVacProporcionales)} días × ${fmt(salDiario)}/d + 30% prima (${diasCorteVac}d comp.)` : 'Sin vacación');
       setRow('lblAguinaldo', 'descAguinaldo', aguinaldo,
@@ -2866,9 +2908,12 @@
       // Estado global para exportación en PDF
       window._state = {
         nombre: g('nombreTrabajador').value, patrono: g('patrono').value, cargo: g('cargo').value,
+        sectorLaboral, sectorLaboralNombre, salarioMinimoSector, indemnizacionTotal,
         salario, ingreso: g('fechaIngreso').value, termino: g('fechaTermino').value,
         anios, mesesRaw, diasRaw, diasFraccTotales, tipo, preaviso, isBlocked,
-        estadoVac, vacCompletaAdeudada, vacProporcional, vacacionTotal,
+        periodosVacCompletos, periodosVacPendientes, ciclosVacPagados,
+        diasRestoVacacion, diasCorteVac,
+        vacCompletaAdeudada, vacProporcional, vacacionTotal,
         aguinaldo, diasAguiComputados, descAguiModo, compensacion, labelComp,
         subHD, subHN, subAsue, subDesc, totalBruto, isss, afp, isr, totalDed, neto,
         baseGravada, salarioBaseCotizacion, isssBase, afpBase, exento
@@ -2930,10 +2975,10 @@
       g('pCausa').textContent = cm[s.tipo] || s.tipo;
 
       const rows = [
-        ...(s.vacCompletaAdeudada > 0 ? [{ c: 'Vacación completa vencida no pagada (15 días + 30% prima)', l: 'Art. 189 CT', v: s.vacCompletaAdeudada }] : []),
+        ...(s.vacCompletaAdeudada > 0 ? [{ c: `Vacaciones completas no gozadas (${s.periodosVacPendientes} ciclos × 15 días + 30% prima)`, l: 'Art. 189 CT', v: s.vacCompletaAdeudada }] : []),
         { c: 'Vacación proporcional (+30% prima)', l: 'Arts. 177 y 187 CT', v: s.vacProporcional },
         { c: `Aguinaldo proporcional (${s.descAguiModo || 'Arts. 196-198 CT'})`, l: 'Arts. 196-200 CT (Reforma)', v: s.aguinaldo },
-        { c: s.labelComp, l: 'Art. 58 CT', v: s.compensacion },
+        { c: s.labelComp, l: s.tipo === 'despido_injusto' ? `Art. 58 CT · pago único de 4 salarios mínimos (${s.sectorLaboralNombre}) · mínimo 2 años` : 'Art. 58 CT', v: s.compensacion },
         { c: 'Horas extras diurnas no pagadas', l: 'Art. 169 CT', v: s.subHD },
         { c: 'Horas extras nocturnas no pagadas', l: 'Arts. 168 y 169 CT', v: s.subHN },
         { c: 'Días de asueto nacional laborados', l: 'Art. 192 CT', v: s.subAsue },
@@ -2986,13 +3031,12 @@
       seguirFechaActual = false;
       g('fechaTermino').value = c.ter;
       g('ultimaVacacion').value = c.uvac;
+      const ciclosVacPagados = document.querySelector(`input[name="ciclosVacPagados"][value="${c.vacPendiente === 'gozada' ? 'si' : 'no'}"]`);
+      if (ciclosVacPagados) ciclosVacPagados.checked = true;
 
       document.querySelector(`input[name="tipoCierre"][value="${c.tipo}"]`).checked = true;
       const preEl = document.querySelector(`input[name="preaviso"][value="${c.pre}"]`);
       if (preEl) preEl.checked = true;
-
-      const vacEl = document.querySelector(`input[name="estadoVacAnterior"][value="${c.vacPendiente || 'gozada'}"]`);
-      if (vacEl) vacEl.checked = true;
 
       if (g('modoAgui') && c.modoAgui) {
         g('modoAgui').value = c.modoAgui;
@@ -3020,6 +3064,8 @@
         .forEach(input => {
           if (input.id !== 'fechaTermino') input.value = '';
         });
+      g('sectorLaboral').value = 'comercio';
+      g('salarioMinimoSector').value = SALARIOS_MINIMOS_POR_SECTOR.comercio.toFixed(2);
       seguirFechaActual = true;
       g('fechaTermino').value = fechaActualISO();
       document.querySelectorAll('#calcForm input[type="radio"]').forEach(input => {
@@ -3030,8 +3076,6 @@
       g('toggleNoAplica').classList.remove('on');
       g('hextSection').style.display = 'block';
       document.querySelectorAll('input[name="asueto"]').forEach(c => c.checked = false);
-      const vGoz = g('vGozada');
-      if (vGoz) vGoz.checked = true;
       if (g('modoAgui')) {
         g('modoAgui').value = 'reforma_oct';
         onModoAguiChange();
